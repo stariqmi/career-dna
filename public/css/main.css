@@ -16,3 +16,26 @@
 .padding-20 {
 	padding: 20px;
 }
+
+p.centered {
+	text-align: center;
+}
+
+.circles {
+	display: flex;
+	justify-content: center;
+}
+
+.circle-option {
+	margin: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.circle {
+	width: 200px;
+	height: 200px;
+	border: 5px solid #e6e6e6;
+	border-radius: 100px;
+}
