@@ -39,3 +39,12 @@ p.centered {
 	border: 5px solid #e6e6e6;
 	border-radius: 100px;
 }
+
+.centered-items {
+	display: flex;
+	justify-content: center;
+}
+
+.option-selected {
+	background-color: #e6e6e6;
+}

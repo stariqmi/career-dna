@@ -70,6 +70,51 @@
 "use strict";
 
 
+var circleOptions = document.getElementsByClassName('circle-option');
+
+var formValues = {
+  college: 'Amherst College',
+  isTransferStudent: false,
+  tookGapYear: false
+};
+
+var selected = {};
+
+var _loop = function _loop(i) {
+  var option = circleOptions[i];
+  option.onclick = function (e) {
+    var circle = option.childNodes[0];
+    var text = option.childNodes[1].textContent;
+
+    if (circle.classList.contains('option-selected')) {
+      circle.classList.remove('option-selected');
+      delete selected[text];
+    } else {
+      circle.classList.add('option-selected');
+      selected[text] = 1;
+    }
+  };
+};
+
+for (var i = 0; i < circleOptions.length; i++) {
+  _loop(i);
+}
+
+document.getElementById('college').onchange = function (e) {
+  return formValues.college = e.target.value;
+};
+document.getElementById('transfer-student').onchange = function (e) {
+  return formValues.isTransferStudent = e.target.value === '1';
+};
+document.getElementById('gap-year').onchange = function (e) {
+  return formValues.tookGapYear = e.target.value === '1';
+};
+
+document.getElementById('submit').onclick = function (e) {
+  console.log(formValues);
+  console.log(selected);
+};
+
 /***/ })
 /******/ ]);
 //# sourceMappingURL=main.bundle.js.map

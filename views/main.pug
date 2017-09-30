@@ -15,90 +15,90 @@ block content
         .field
           .control
             .select
-              select
-                option() Amherst College
-                option() Bard College
-                option() BARNARD COLLEGE
-                option() Bates College
-                option() Bowdoin College
-                option() Bryn Mawr College
-                option() Bucknell University
-                option() Carleton College
-                option() Centre College
-                option() Claremont McKenna College
-                option() Colby College
-                option() Colgate University
-                option() College of the Holy Cross
-                option() Colorado College
-                option() Connecticut College
-                option() Davidson College
-                option() Dickinson College
-                option() FRANKLIN & MARSHALL COLLEGE
-                option() Grinnell College
-                option() Hamilton College
-                option() Harvey Mudd College
-                option() Haverford College
-                option() Kenyon College
-                option() Lafayette College
-                option() Macalester College
-                option() Middlebury College
-                option() Mount Holyoke College
-                option() Oberlin College
-                option() Occidental College
-                option() Pitzer College
-                option() Pomona College
-                option() Rhodes College
-                option() Scripps College
-                option() Skidmore College
-                option() Smith College
-                option() Soka University of America
-                option() Swarthmore College
-                option() Trinity College
-                option() Union College
-                option() University of Richmond
-                option() UNIVERSITY OF THE SOUTH
-                option() Vassar College
-                option() WASHINGTON & LEE UNIVERSITY
-                option() Wellesley College
-                option() Wesleyan University
-                option() Whitman College
-                option() Williams College
+              select#college
+                option Amherst College
+                option Bard College
+                option BARNARD COLLEGE
+                option Bates College
+                option Bowdoin College
+                option Bryn Mawr College
+                option Bucknell University
+                option Carleton College
+                option Centre College
+                option Claremont McKenna College
+                option Colby College
+                option Colgate University
+                option College of the Holy Cross
+                option Colorado College
+                option Connecticut College
+                option Davidson College
+                option Dickinson College
+                option FRANKLIN & MARSHALL COLLEGE
+                option Grinnell College
+                option Hamilton College
+                option Harvey Mudd College
+                option Haverford College
+                option Kenyon College
+                option Lafayette College
+                option Macalester College
+                option Middlebury College
+                option Mount Holyoke College
+                option Oberlin College
+                option Occidental College
+                option Pitzer College
+                option Pomona College
+                option Rhodes College
+                option Scripps College
+                option Skidmore College
+                option Smith College
+                option Soka University of America
+                option Swarthmore College
+                option Trinity College
+                option Union College
+                option University of Richmond
+                option UNIVERSITY OF THE SOUTH
+                option Vassar College
+                option WASHINGTON & LEE UNIVERSITY
+                option Wellesley College
+                option Wesleyan University
+                option Whitman College
+                option Williams College
 
       .flex-form-field
         p.is-size-5.has-text-white Were you a transfer student?
         .field
           .control
             .select
-              select
-                option(value='1') Yes
+              select#transfer-student
                 option(value='0') No
+                option(value='1') Yes
       .flex-form-field
         p.is-size-5.has-text-white Did you take a gap year?
         .field
           .control
             .select
-              select
-                option(value='1') Yes
+              select#gap-year
                 option(value='0') No
+                option(value='1') Yes
   section.padding-20
     .container
       p.is-size-4.centered Please choose the most important ingredients of your secret sauce
     .circles
       .circle-option
         .circle
-        p My Identity
+        p My identity
       .circle-option
         .circle
-        p My Parents
+        p My parents
       .circle-option
         .circle
-        p My Gender
+        p My gender
       .circle-option
         .circle
-        p My Family
+        p My family
       .circle-option
         .circle
-        p How I Paid for School
+        p How I paid for school
     .circles
       .circle-option
         .circle
@@ -108,7 +108,7 @@ block content
         p My life on campus
       .circle-option
         .circle
-        p My Getting used to college
+        p My getting used to college
       .circle-option
         .circle
         p Becoming a senior
@@ -131,5 +131,8 @@ block content
       .circle-option
         .circle
         p Other things
+
+    .centered-items
+      #submit.button.yellow-bg.has-text-white Let's Make Your Secret Sauce
 
   script(src='/dist/main.bundle.js')
