@@ -1,0 +1,18 @@
+.flex-form-field {
+	display: flex;
+	justify-content: flex-start;
+	vertical-align: center;
+	margin-bottom: 10px;
+}
+
+.flex-form-field .field {
+	margin-left: 20px;
+}
+
+.yellow-bg {
+	background-color: #ffad33;
+}
+
+.padding-20 {
+	padding: 20px;
+}
