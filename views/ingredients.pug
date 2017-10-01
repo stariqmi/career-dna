@@ -1,0 +1,24 @@
+extends layout
+
+block append styles
+  link(rel='stylesheet' type='text/css' href='/css/ingredients.css')
+
+block append scripts
+  script(src="https://use.fontawesome.com/0ccbc46afa.js")
+
+block content
+  nav.navbar(role='navigation' aria-label='main navigation')
+    .navbar-brand
+      p.navbar-item.is-size-4
+        | CAREER
+        span.has-text-weight-bold DNA
+  .bar.yellow-bg
+  section
+    .container
+      .ingredients-nav.padding-20
+        i#left.fa.fa-chevron-left.fa-2x.grey-font
+        .ingredients
+        i#right.fa.fa-chevron-right.fa-2x.grey-font
+
+
+  script(src='/dist/ingredients.bundle.js')

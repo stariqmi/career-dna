@@ -2,8 +2,8 @@ const circleOptions = document.getElementsByClassName('circle-option')
 
 const formValues = {
   college: 'Amherst College',
-  isTransferStudent: false,
-  tookGapYear: false,
+  isTransferStudent: 0,
+  tookGapYear: 0,
 }
 
 const selected = {}
@@ -26,10 +26,14 @@ for (let i = 0; i < circleOptions.length; i++) {
 }
 
 document.getElementById('college').onchange = (e) => formValues.college = e.target.value
-document.getElementById('transfer-student').onchange = (e) => formValues.isTransferStudent = (e.target.value === '1')
-document.getElementById('gap-year').onchange = (e) => formValues.tookGapYear = (e.target.value === '1')
+document.getElementById('transfer-student').onchange = (e) => formValues.isTransferStudent = parseInt(e.target.value)
+document.getElementById('gap-year').onchange = (e) => formValues.tookGapYear = parseInt(e.target.value)
 
 document.getElementById('submit').onclick = (e) => {
-  console.log(formValues)
-  console.log(selected)
+  const selectedAsArray = Object.keys(selected).map(s => `${s}`).join(',')
+
+  let url = `/ingredients?college=${formValues.college}&transfer=${formValues.isTransferStudent}&gap=${formValues.tookGapYear}`
+  url += `&ingredients=${selectedAsArray}`
+
+  window.location.href = url
 }

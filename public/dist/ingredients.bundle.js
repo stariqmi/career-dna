@@ -60,67 +60,73 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
+/* 0 */,
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var circleOptions = document.getElementsByClassName('circle-option');
+var ingredientsStart = 0;
 
-var formValues = {
-  college: 'Amherst College',
-  isTransferStudent: 0,
-  tookGapYear: 0
-};
+var url = window.location.href;
+var paramString = url.split('?')[1];
+var params = paramString.split('&').map(function (p) {
+	return decodeURIComponent(p).split('=');
+});
 
-var selected = {};
-
-var _loop = function _loop(i) {
-  var option = circleOptions[i];
-  option.onclick = function (e) {
-    var circle = option.childNodes[0];
-    var text = option.childNodes[1].textContent;
-
-    if (circle.classList.contains('option-selected')) {
-      circle.classList.remove('option-selected');
-      delete selected[text];
-    } else {
-      circle.classList.add('option-selected');
-      selected[text] = 1;
-    }
-  };
-};
-
-for (var i = 0; i < circleOptions.length; i++) {
-  _loop(i);
+var paramObj = {};
+for (var i = 0; i < params.length; i++) {
+	paramObj[params[i][0]] = params[i][1];
 }
 
-document.getElementById('college').onchange = function (e) {
-  return formValues.college = e.target.value;
-};
-document.getElementById('transfer-student').onchange = function (e) {
-  return formValues.isTransferStudent = parseInt(e.target.value);
-};
-document.getElementById('gap-year').onchange = function (e) {
-  return formValues.tookGapYear = parseInt(e.target.value);
+paramObj.gap = parseInt(paramObj.gap);
+paramObj.transfer = parseInt(paramObj.transfer);
+paramObj.ingredients = paramObj.ingredients.split(',');
+
+var ingredientsContainer = document.getElementsByClassName('ingredients')[0];
+
+function drawIngredients(start, container) {
+	container.innerHTML = ''; // Clear
+
+	// Select 3 from start, draw them
+	for (var _i = start; _i < start + 3; _i++) {
+		var el = document.createElement('div');
+		el.classList.add('ingredient');
+		el.classList.add('padding-20');
+
+		var circle = document.createElement('div');
+		circle.classList.add('circle');
+		// circle.classList.add('small-circle')
+		el.appendChild(circle);
+
+		var p = document.createElement('p');
+		p.classList.add('centered-text');
+		p.innerHTML = paramObj.ingredients[_i];
+		el.appendChild(p);
+
+		container.appendChild(el);
+	}
+}
+
+document.getElementById('left').onclick = function () {
+	if (ingredientsStart === 0) return;else ingredientsStart -= 1;
+
+	drawIngredients(ingredientsStart, ingredientsContainer);
 };
 
-document.getElementById('submit').onclick = function (e) {
-  var selectedAsArray = Object.keys(selected).map(function (s) {
-    return '' + s;
-  }).join(',');
+document.getElementById('right').onclick = function () {
+	if (ingredientsStart === paramObj.ingredients.length - 3) return;else ingredientsStart += 1;
 
-  var url = '/ingredients?college=' + formValues.college + '&transfer=' + formValues.isTransferStudent + '&gap=' + formValues.tookGapYear;
-  url += '&ingredients=' + selectedAsArray;
-
-  window.location.href = url;
+	drawIngredients(ingredientsStart, ingredientsContainer);
 };
+
+drawIngredients(0, ingredientsContainer);
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=main.bundle.js.map
+//# sourceMappingURL=ingredients.bundle.js.map

@@ -1,12 +1,11 @@
 extends layout
 
-block append styles
-  link(rel='stylesheet' type='text/css' href='/css/main.css')
-
 block content
   nav.navbar(role='navigation' aria-label='main navigation')
     .navbar-brand
-      p.navbar-item.is-size-4 CAREERDNA
+      p.navbar-item.is-size-4
+        | CAREER
+        span.has-text-weight-bold DNA
   section.yellow-bg.padding-20
     .container
       p.is-size-2.has-text-white Discover your secret sauce for early career success

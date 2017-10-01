@@ -40,6 +40,13 @@ p.centered {
 	border-radius: 100px;
 }
 
+.small-circle {
+	width: 150px;
+	height: 150px;
+	border-radius: 75px;
+	border: 5px solid #e6e6e6;
+}
+
 .centered-items {
 	display: flex;
 	justify-content: center;
@@ -47,4 +54,12 @@ p.centered {
 
 .option-selected {
 	background-color: #e6e6e6;
+}
+
+.grey-font {
+	color: #b3b3b3;
+}
+
+.centered-text {
+	text-align: center;
 }

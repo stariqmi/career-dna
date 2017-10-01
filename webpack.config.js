@@ -2,11 +2,14 @@
  var webpack = require('webpack');
 
  module.exports = {
-     entry: './public/js/main.js',
-     output: {
+    entry: {
+        main: './public/js/main.js',
+        ingredients: './public/js/ingredients.js',
+    },
+    output: {
          path: path.resolve(__dirname, 'public/dist'),
-         filename: 'main.bundle.js'
-     },
+         filename: '[name].bundle.js'
+    },
      module: {
          loaders: [
              {
