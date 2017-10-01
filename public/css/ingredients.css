@@ -22,3 +22,33 @@
 	justify-content: center;
 	align-items: center;
 }
+
+#left:hover, #right:hover, .ingredient .circle:hover {
+	cursor: pointer;
+}
+
+.ingredient-menu {
+	display: flex;
+	justify-content: center;
+	align-items: center;	
+}
+
+.ingredient-menu--item {
+	width: 200px;
+	height: 200px;
+	background-color: #e6e6e6;
+	border: 2px solid #b3b3b3;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 20px;
+	margin-right: 10px;
+}
+
+.ingredient-menu--item:last-of-type {
+	margin-right: 0;
+}
+
+.ingredient-menu--item p {
+	text-align: center;
+}
