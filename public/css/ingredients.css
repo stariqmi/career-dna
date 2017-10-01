@@ -52,3 +52,7 @@
 .ingredient-menu--item p {
 	text-align: center;
 }
+
+#selected {
+	text-align: center;
+}

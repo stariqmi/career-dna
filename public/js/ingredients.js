@@ -8,11 +8,11 @@ const options = {
 	'My life on campus': ['Mostly lived on campus', 'Worked', 'Fraternities / Sororities', 'Varsity Sports'],
 	'My getting used to college': ['Remedial Course', 'Active Campus Life',	'Happy with grades'],
 	'Becoming a senior': ['Internships Junior Year', 'Declare Major', 'Job Search', 'No Plans For Jobs'],
-	'My major':	['SCIENCE, TECHNOLOGY, ENGINEERING OR MATH', 'ECONOMICS, FINANCE, OR ACCOUNTING', 'FINE ARTS, MUSIC, DRAMA, OR PERFORMING ARTS', 'ENVIRONMENTAL STUDIES, FORESTRY, OR ECOLOGY	LIBERAL ARTS, HISTORY, ANY LANGUAGE, OR PHILOSOPHY	PSYCHOLOGY, SOCIOLOGY, ANTHROPOLOGY, OR RELIGIOUS STUDIES	POLITICAL SCIENCE, PUBLIC POLICY, OR GOVERNMENT'],
+	'My major':	['SCIENCE, TECHNOLOGY, ENGINEERING OR MATH', 'ECONOMICS, FINANCE, OR ACCOUNTING', 'FINE ARTS, MUSIC, DRAMA, OR PERFORMING ARTS', 'ENVIRONMENTAL STUDIES, FORESTRY, OR ECOLOGY', 'LIBERAL ARTS, HISTORY, ANY LANGUAGE, OR PHILOSOPHY	PSYCHOLOGY, SOCIOLOGY ...', 'POLITICAL SCIENCE, PUBLIC POLICY, OR GOVERNMENT'],
 	'Effects of my student loans': ['WILL TAKE JOB OUTSIDE OF FIELD OF STUDY', 'WILL LESS DESIRABLE JOB', 'WILL WORK MORE THAN ONE JOB', 'WILL WORK MORE HOURS'],
 	'My certifications': ['STATE CERTIFICATIONS', 'PROFESSIONAL CERTIFICATIONS', 'JOB REQUIREMENT', 'PART OF COURSE'],
 	'Barriers beyond me': ['NO RIGHT CREDENTIALS / GRADES', 'CANT RELOCATE', 'LACK OF CONNECTIONS', 'NO RECRUTUING / CAREER SVCS HELP'],	
-	'Serious life event': ['DIVORCE IN FAMILY', 'PARENTS JOB LOSS', 'ILLNESS', 'DEATH'],
+	'Serious life events': ['DIVORCE IN FAMILY', 'PARENTS JOB LOSS', 'ILLNESS', 'DEATH'],
 	'Other things': [],
 }
 
@@ -54,16 +54,20 @@ function drawIngredients(start, container) {
 		p.innerHTML = paramObj.ingredients[i]
 		el.appendChild(p)
 
-		el.onclick = renderIngredientMenu(paramObj.ingredients[i], ingredientMenuContainer)
+		el.onclick = renderIngredientMenu(el, paramObj.ingredients[i], ingredientMenuContainer)
 
 		container.appendChild(el)
 	}
 }
 
-function renderIngredientMenu(ingredient, container) {
+function renderIngredientMenu(element, ingredient, container) {
 	return function(e) {
-		const menuItems = options[ingredient]
+		// Cleanup
 		ingredientMenuContainer.innerHTML = '' // Clear
+		
+		document.getElementById('selected').innerHTML = ingredient
+
+		const menuItems = options[ingredient]
 
 		for (let i = 0; i < menuItems.length; i++) {
 			let menuItem = document.createElement('div')

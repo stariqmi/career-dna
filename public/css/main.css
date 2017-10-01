@@ -56,6 +56,10 @@ p.centered {
 	background-color: #e6e6e6;
 }
 
+.option-selected-text {
+	font-weight: bolder;
+}
+
 .grey-font {
 	color: #b3b3b3;
 }
