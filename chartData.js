@@ -50,7 +50,7 @@ module.exports = function(data) {
 								else links[linkKey] = 1
 							}
 						},
-						submission.ingredients,
+						submission.ingredients
 					)
 				},
 				submission.ingredients
