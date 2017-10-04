@@ -1,0 +1,21 @@
+extends layout
+
+block append styles
+  link(rel='stylesheet' type='text/css' href='/css/main.css')
+
+block content
+  nav.navbar(role='navigation' aria-label='main navigation')
+    .navbar-brand
+      p.navbar-item.is-size-4
+        | CAREER
+        span.has-text-weight-bold DNA
+  .bar.yellow-bg
+  section
+    .container.landing-text
+      p.is-size-6 PLEASE CHOOSE WHICH ONE YOU ARE
+      p.is-size-1 
+        | SEEKING TO BE A HAPPIER&nbsp;
+        a.is-yellow.is-hover-yellow.is-underlined.is-clickable(href='/discover') EMPLOYEE.
+      p.is-size-1
+        | I'M A HAPPIER&nbsp;
+        a.is-yellow.is-hover-yellow.is-underlined.is-clickable(href='/results') EMPLOYER.

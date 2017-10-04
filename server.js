@@ -19,7 +19,9 @@ MongoClient.connect(mongoUri, function(err, db) {
   	assert.equal(null, err)
   	console.log("Connected successfully to mongo dbserver")
 	
-	app.get('/', (req, res) => res.render('main.pug'))
+	app.get('/', (req, res) => res.render('landing'))
+
+	app.get('/discover', (req, res) => res.render('main.pug'))
 
 	app.get('/ingredients', (req, res) =>   res.render('ingredients.pug'))
 
