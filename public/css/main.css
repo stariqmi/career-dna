@@ -34,10 +34,20 @@ p.centered {
 }
 
 .circle {
-	width: 200px;
-	height: 200px;
+	width: 150px;
+	height: 150px;
+	border-radius: 75px;
 	border: 5px solid #e6e6e6;
-	border-radius: 100px;
+
+	display: flex;
+	justify-content: center;
+	text-align: center;
+}
+
+.circle img {
+	align-self: center;
+	width: 70px;
+	height: 70px;
 }
 
 .small-circle {

@@ -1,3 +1,5 @@
+import request from 'superagent'
+
 const options = {
 	'My identity': ['White', 'Black or Latin', 'Asian', 'Other'],
 	'My gender': ['Male', 'Female', 'Trans', 'Other'],
@@ -16,6 +18,7 @@ const options = {
 	'Other things': [],
 }
 
+const ingredientSelection = {}
 
 let ingredientsStart = 0
 
@@ -60,6 +63,18 @@ function drawIngredients(start, container) {
 	}
 }
 
+function onMenuItemClick(ingredient, selection) {
+	return function(e) {
+		ingredientSelection[ingredient] = selection
+		const preSelected = document.getElementsByClassName('ingredient-menu--selected')[0]
+		if (preSelected) preSelected.classList.remove('ingredient-menu--selected')
+
+		let selected = e.target
+		if (selected.nodeName === 'P') selected = selected.parentElement
+		selected.classList.add('ingredient-menu--selected')
+	}
+}
+
 function renderIngredientMenu(element, ingredient, container) {
 	return function(e) {
 		// Cleanup
@@ -79,6 +94,8 @@ function renderIngredientMenu(element, ingredient, container) {
 			menuItem.appendChild(p)
 
 			container.appendChild(menuItem)
+
+			menuItem.onclick = onMenuItemClick(ingredient, menuItems[i])
 		}
 	}
 }
@@ -95,6 +112,27 @@ document.getElementById('right').onclick = () => {
 	else ingredientsStart += 1
 
 	drawIngredients(ingredientsStart, ingredientsContainer)
+}
+
+document.getElementById('submit').onclick = (e) => {
+	const data = {
+		college: paramObj.college,
+		transfer: paramObj.transfer,
+		gap: paramObj.gap,
+		ingredients: ingredientSelection,
+	}
+
+	e.target.classList.add('is-loading')
+	request.post('/submit')
+		.send(data)
+		.then((res) => {
+			if (res.body.status === 'ok') {
+				window.location.href = '/results'
+			}
+			else {
+				alert('Something went wrong!')
+			}
+		})
 }
 
 drawIngredients(0, ingredientsContainer)
