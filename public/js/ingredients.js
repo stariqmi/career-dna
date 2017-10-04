@@ -18,6 +18,25 @@ const options = {
 	'Other things': [],
 }
 
+const icons = {
+    'My identity': '/icons/identify.png',
+    'My parents': '/icons/parents.png',
+    'My gender': '/icons/gender.png',
+    'My family': '/icons/family.png',
+    'How I paid for school': '/icons/school-paid.png',
+    'Why I chose my school': '/icons/school-choice.png',
+    'My life on campus': '/icons/campus-life.png',
+    'My getting used to college': '/icons/college-life.png',
+    'Becoming a senior': '/icons/senior.png',
+    'My major': '/icons/major.png',
+    'Effects of my student loans': '/icons/student-loans.png',
+    'My certifications': '/icons/certifications.png',
+    'Barriers beyond me': '/icons/barriers.png',
+    'Serious life events': '/icons/serious-life-events.png',
+    'Other things': '/icons/other-things.png',
+}
+
+
 const ingredientSelection = {}
 
 let ingredientsStart = 0
@@ -43,23 +62,29 @@ function drawIngredients(start, container) {
 
 	// Select 3 from start, draw them
 	for (let i = start; i < (start + 3); i++) {
-		const el = document.createElement('div')
-		el.classList.add('ingredient')
-		el.classList.add('padding-20')
+		if (paramObj.ingredients[i]) {
+			const el = document.createElement('div')
+			el.classList.add('ingredient')
+			el.classList.add('padding-20')
 
-		const circle = document.createElement('div')
-		circle.classList.add('circle')
-		// circle.classList.add('small-circle')
-		el.appendChild(circle)
+			const circle = document.createElement('div')
+			circle.classList.add('circle')
+			// circle.classList.add('small-circle')
+			el.appendChild(circle)
 
-		const p = document.createElement('p')
-		p.classList.add('centered-text')
-		p.innerHTML = paramObj.ingredients[i]
-		el.appendChild(p)
+			const img = document.createElement('img')
+			img.setAttribute('src', icons[paramObj.ingredients[i]])
+			circle.appendChild(img)
 
-		el.onclick = renderIngredientMenu(el, paramObj.ingredients[i], ingredientMenuContainer)
+			const p = document.createElement('p')
+			p.classList.add('centered-text')
+			p.innerHTML = paramObj.ingredients[i]
+			el.appendChild(p)
 
-		container.appendChild(el)
+			el.onclick = renderIngredientMenu(el, paramObj.ingredients[i], ingredientMenuContainer)
+
+			container.appendChild(el)
+		}
 	}
 }
 
@@ -101,6 +126,8 @@ function renderIngredientMenu(element, ingredient, container) {
 }
 
 document.getElementById('left').onclick = () => {	
+	if (Object.keys(paramObj.ingredients).length <= 3) return
+
 	if (ingredientsStart === 0) return
 	else ingredientsStart -= 1
 
@@ -108,6 +135,8 @@ document.getElementById('left').onclick = () => {
 }
 
 document.getElementById('right').onclick = () => {
+	if (Object.keys(paramObj.ingredients).length <= 3) return
+
 	if (ingredientsStart === (paramObj.ingredients.length - 3)) return
 	else ingredientsStart += 1
 
