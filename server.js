@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert')
 const compileChartData = require('./chartData')
+const radarChartData = require('./radar_chart_data')
 
 const port = process.env.PORT || 3030;
 
@@ -21,9 +22,9 @@ MongoClient.connect(mongoUri, function(err, db) {
 	
 	app.get('/', (req, res) => res.render('landing'))
 
-	app.get('/discover', (req, res) => res.render('main.pug'))
+	app.get('/discover', (req, res) => res.render('main'))
 
-	app.get('/ingredients', (req, res) =>   res.render('ingredients.pug'))
+	app.get('/ingredients', (req, res) =>   res.render('ingredients'))
 
 	app.get('/data', (req, res) => {
 		const collection = db.collection('ingredientSubmission')
@@ -33,8 +34,15 @@ MongoClient.connect(mongoUri, function(err, db) {
 		})
 	})
 
-	app.get('/results', (req, res) => {
-		res.render('results.pug')
+	app.get('/results', (req, res) => res.render('results'))
+	app.get('/results_2', (req, res) => res.render('results_2'))
+
+	app.get('/radar_chart_data', (req, res) => {
+		const collection = db.collection('ingredientSubmission')
+		collection.find().toArray((error, docs) => {
+			assert.equal(null, error)
+			res.json(radarChartData(docs))
+		})
 	})
 
 	app.post('/submit', (req, res) => {

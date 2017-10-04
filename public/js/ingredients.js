@@ -165,7 +165,7 @@ document.getElementById('submit').onclick = (e) => {
 		.send(data)
 		.then((res) => {
 			if (res.body.status === 'ok') {
-				window.location.href = '/results'
+				window.location.href = '/results_2'
 			}
 			else {
 				alert('Something went wrong!')

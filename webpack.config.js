@@ -5,6 +5,7 @@
     entry: {
         main: './public/js/main.js',
         ingredients: './public/js/ingredients.js',
+        results: './public/js/results.js',
     },
     output: {
          path: path.resolve(__dirname, 'public/dist'),

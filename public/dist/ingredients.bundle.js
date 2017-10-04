@@ -60,18 +60,18 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 127);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */,
-/* 1 */
+/******/ ({
+
+/***/ 127:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _superagent = __webpack_require__(3);
+var _superagent = __webpack_require__(128);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
@@ -239,7 +239,7 @@ document.getElementById('submit').onclick = function (e) {
 	e.target.classList.add('is-loading');
 	_superagent2.default.post('/submit').send(data).then(function (res) {
 		if (res.body.status === 'ok') {
-			window.location.href = '/results';
+			window.location.href = '/results_2';
 		} else {
 			alert('Something went wrong!');
 		}
@@ -249,30 +249,8 @@ document.getElementById('submit').onclick = function (e) {
 drawIngredients(0, ingredientsContainer);
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/**
- * Check if `obj` is an object.
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api private
- */
-
-function isObject(obj) {
-  return null !== obj && 'object' === (typeof obj === 'undefined' ? 'undefined' : _typeof(obj));
-}
-
-module.exports = isObject;
-
-/***/ }),
-/* 3 */
+/***/ 128:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -297,11 +275,11 @@ if (typeof window !== 'undefined') {
   root = undefined;
 }
 
-var Emitter = __webpack_require__(4);
-var RequestBase = __webpack_require__(5);
-var isObject = __webpack_require__(2);
-var ResponseBase = __webpack_require__(6);
-var shouldRetry = __webpack_require__(8);
+var Emitter = __webpack_require__(129);
+var RequestBase = __webpack_require__(130);
+var isObject = __webpack_require__(7);
+var ResponseBase = __webpack_require__(131);
+var shouldRetry = __webpack_require__(133);
 
 /**
  * Noop.
@@ -1197,7 +1175,8 @@ request.put = function (url, data, fn) {
 };
 
 /***/ }),
-/* 4 */
+
+/***/ 129:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1362,7 +1341,8 @@ Emitter.prototype.hasListeners = function (event) {
 };
 
 /***/ }),
-/* 5 */
+
+/***/ 130:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1373,7 +1353,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(2);
+var isObject = __webpack_require__(7);
 
 /**
  * Expose `RequestBase`.
@@ -1989,7 +1969,8 @@ RequestBase.prototype._setTimeouts = function () {
 };
 
 /***/ }),
-/* 6 */
+
+/***/ 131:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1999,7 +1980,7 @@ RequestBase.prototype._setTimeouts = function () {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(132);
 
 /**
  * Expose `ResponseBase`.
@@ -2127,7 +2108,8 @@ ResponseBase.prototype._setStatusProperties = function (status) {
 };
 
 /***/ }),
-/* 7 */
+
+/***/ 132:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2202,7 +2184,8 @@ exports.cleanHeader = function (header, shouldStripCookie) {
 };
 
 /***/ }),
-/* 8 */
+
+/***/ 133:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2227,6 +2210,31 @@ module.exports = function shouldRetry(err, res) {
   return false;
 };
 
+/***/ }),
+
+/***/ 7:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/**
+ * Check if `obj` is an object.
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+function isObject(obj) {
+  return null !== obj && 'object' === (typeof obj === 'undefined' ? 'undefined' : _typeof(obj));
+}
+
+module.exports = isObject;
+
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=ingredients.bundle.js.map
