@@ -1,6 +1,6 @@
-var margin = {top: 100, right: 0, bottom: 10, left: 100},
-    width = 500,
-    height = 500;
+var margin = {top: 300, right: 0, bottom: 10, left: 300},
+    width = 400,
+    height = 400;
 
 var x = d3.scale.ordinal().rangeBands([0, width]),
     z = d3.scale.linear().domain([0, 4]).clamp(true),
@@ -14,7 +14,7 @@ var svg = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("data.json", function(miserables) {
+d3.json("data", function(miserables) {
   var matrix = [],
       nodes = miserables.nodes,
       n = nodes.length;

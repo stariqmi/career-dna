@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert')
+const compileChartData = require('./chartData')
 
 const port = process.env.PORT || 3030;
 
@@ -22,12 +23,15 @@ MongoClient.connect(mongoUri, function(err, db) {
 
 	app.get('/ingredients', (req, res) =>   res.render('ingredients.pug'))
 
+	app.get('/data', (req, res) => {
+		const collection = db.collection('ingredientSubmission')
+		collection.find().toArray((error, docs) => {
+			assert.equal(null, error)
+			res.json(compileChartData(docs))
+		})
+	})
+
 	app.get('/results', (req, res) => {
-		// const collection = db.collection('ingredientSubmission')
-		// collection.find().toArray((error, docs) => {
-		// 	assert.equal(null, error)
-		// 	res.json({data: docs})
-		// })
 		res.render('results.pug')
 	})
 
