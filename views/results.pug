@@ -1,0 +1,31 @@
+extends layout
+
+block append styles
+  link(rel='stylesheet' type='text/css' href='/css/ingredients.css')
+  link(rel='stylesheet' type='text/css' href='/css/results.css')
+
+block append scripts
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js" charset="utf-8")
+
+block content
+  nav.navbar(role='navigation' aria-label='main navigation')
+    .navbar-brand
+      p.navbar-item.is-size-4
+        | CAREER
+        span.has-text-weight-bold DNA
+  .bar.yellow-bg
+  section
+    .container
+      aside(style="margin-top:80px;")
+        .flex-form-field
+          p.is-size-5 Order By
+          .field
+            .control
+              .select
+                select#order
+                  option(value="name") by Name
+                  option(value="count") by Frequency
+                  option(value="group") by Cluster
+    .centered-items
+      #chart.container
+  script(src='/js/chart.js')

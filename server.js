@@ -23,11 +23,12 @@ MongoClient.connect(mongoUri, function(err, db) {
 	app.get('/ingredients', (req, res) =>   res.render('ingredients.pug'))
 
 	app.get('/results', (req, res) => {
-		const collection = db.collection('ingredientSubmission')
-		collection.find().toArray((error, docs) => {
-			assert.equal(null, error)
-			res.json({data: docs})
-		})
+		// const collection = db.collection('ingredientSubmission')
+		// collection.find().toArray((error, docs) => {
+		// 	assert.equal(null, error)
+		// 	res.json({data: docs})
+		// })
+		res.render('results.pug')
 	})
 
 	app.post('/submit', (req, res) => {
