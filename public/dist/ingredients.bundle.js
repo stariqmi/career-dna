@@ -168,7 +168,11 @@ function drawIngredients(start, container) {
 
 function onMenuItemClick(ingredient, selection) {
 	return function (e) {
+		// If already selected for this ingredient
+		if (ingredientSelection[ingredient] === selection) return;
+
 		ingredientSelection[ingredient] = selection;
+
 		var preSelected = document.getElementsByClassName('ingredient-menu--selected')[0];
 		if (preSelected) preSelected.classList.remove('ingredient-menu--selected');
 
@@ -191,6 +195,11 @@ function renderIngredientMenu(element, ingredient, container) {
 			var menuItem = document.createElement('div');
 			menuItem.classList.add('ingredient-menu--item');
 			menuItem.classList.add('padding-20');
+			menuItem.classList.add(ingredient.replace(/\s/g, '-'));
+
+			if (ingredientSelection[ingredient] === menuItems[_i2]) {
+				menuItem.classList.add('ingredient-menu--selected');
+			}
 
 			var p = document.createElement('p');
 			p.innerHTML = menuItems[_i2];
