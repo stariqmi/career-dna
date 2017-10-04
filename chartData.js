@@ -56,7 +56,7 @@ module.exports = function(data) {
 				submission.ingredients
 			)
 		},
-		data,
+		data
 	)
 
 	const linksArr = []
@@ -65,7 +65,7 @@ module.exports = function(data) {
 			const keyParts = key.split('#')
 			linksArr.push({ source: nodes[keyParts[0]], target: nodes[keyParts[1]], value })
 		},
-		links,
+		links
 	)
 
 	return { nodes: nodeList, links: linksArr }
