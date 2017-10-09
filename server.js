@@ -1,11 +1,13 @@
+const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert')
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const expressSession = require('express-session');
+const session = require('express-session');
 
 const models = require('./models')
 const router = require('./router')
@@ -23,26 +25,21 @@ const mongoUri = 'mongodb://zipjobsadmin:Zip10065@zipjobs-shard-00-00-j5kbg.mong
 const saltRounds = 10;
 
 const app = express()
-app.use(expressSession({
-  secret: 'some-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true },
-}));
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(flash())
 
 app.set('view engine', 'pug')
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 app.use(bodyParser.json())
-app.use(express.static(__dirname + '/public'))
+app.use(session({ secret: 'anything', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 passport.serializeUser((user, done) => {
   done(null, user.id)
 });
  
 passport.deserializeUser((id, done) => {
-  console.log(id)
   User.forge({ id })
     .fetch()
     .then((user) => {
@@ -59,7 +56,7 @@ passport.use('signup', passportConfig.signup())
 MongoClient.connect(mongoUri, function(err, db) {
   assert.equal(null, err)
   console.log("Connected successfully to mongo dbserver")
-  app.use(router(passport))
+  app.use(router(passport, db))
   
   app.listen(port, () => console.log(`Server running on port ${port}`))
 })

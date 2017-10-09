@@ -9,7 +9,7 @@ function login() {
   {
     passReqToCallback : true
   },
-  function(req, username, password, done) { 
+  function(req, username, password, done) {
     User.forge({ email :  username })
       .fetch()
       .then((user) => {
