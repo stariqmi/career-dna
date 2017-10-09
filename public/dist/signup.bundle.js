@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 133);
+/******/ 	return __webpack_require__(__webpack_require__.s = 184);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -935,7 +935,7 @@ module.exports = function shouldRetry(err, res) {
 
 /***/ }),
 
-/***/ 133:
+/***/ 184:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -947,176 +947,70 @@ var _superagent2 = _interopRequireDefault(_superagent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var options = {
-	'My identity': ['White', 'Black or Latin', 'Asian', 'Other'],
-	'My gender': ['Male', 'Female', 'Trans', 'Other'],
-	'My parents': ['Both parents went to college', 'One parent went to college', 'No parent went to college', 'First to go to college'],
-	'My family': ['Broke', 'Middle Class', 'Upper Middle Class', 'Rich'],
-	'How I paid for school': ['No Loans', 'Loans', 'Scholarships, Grants', 'Pell Grants'],
-	'Why I chose my school': ['Specific Program', 'Rank / Reputation', 'Cost', 'Family'],
-	'My life on campus': ['Mostly lived on campus', 'Worked', 'Fraternities / Sororities', 'Varsity Sports'],
-	'My getting used to college': ['Remedial Course', 'Active Campus Life', 'Happy with grades'],
-	'Becoming a senior': ['Internships Junior Year', 'Declare Major', 'Job Search', 'No Plans For Jobs'],
-	'My major': ['SCIENCE, TECHNOLOGY, ENGINEERING OR MATH', 'ECONOMICS, FINANCE, OR ACCOUNTING', 'FINE ARTS, MUSIC, DRAMA, OR PERFORMING ARTS', 'ENVIRONMENTAL STUDIES, FORESTRY, OR ECOLOGY', 'LIBERAL ARTS, HISTORY, ANY LANGUAGE, OR PHILOSOPHY	PSYCHOLOGY, SOCIOLOGY ...', 'POLITICAL SCIENCE, PUBLIC POLICY, OR GOVERNMENT'],
-	'Effects of my student loans': ['WILL TAKE JOB OUTSIDE OF FIELD OF STUDY', 'WILL LESS DESIRABLE JOB', 'WILL WORK MORE THAN ONE JOB', 'WILL WORK MORE HOURS'],
-	'My certifications': ['STATE CERTIFICATIONS', 'PROFESSIONAL CERTIFICATIONS', 'JOB REQUIREMENT', 'PART OF COURSE'],
-	'Barriers beyond me': ['NO RIGHT CREDENTIALS / GRADES', 'CANT RELOCATE', 'LACK OF CONNECTIONS', 'NO RECRUTUING / CAREER SVCS HELP'],
-	'Serious life events': ['DIVORCE IN FAMILY', 'PARENTS JOB LOSS', 'ILLNESS', 'DEATH'],
-	'Other things': []
+var errorContainer = document.getElementById('error-container');
+var errorBody = document.getElementById('error');
+
+var emailInput = document.getElementById('email');
+var passwordInput = document.getElementById('password');
+var passwordConfirmInput = document.getElementById('confirm-password');
+
+var submit = document.getElementById('submit');
+
+errorContainer.style.display = 'none';
+
+var checkIfPasswordsMatch = function checkIfPasswordsMatch(password, passwordConfirm) {
+	return password === passwordConfirm;
 };
 
-var icons = {
-	'My identity': '/icons/identify.png',
-	'My parents': '/icons/parents.png',
-	'My gender': '/icons/gender.png',
-	'My family': '/icons/family.png',
-	'How I paid for school': '/icons/school-paid.png',
-	'Why I chose my school': '/icons/school-choice.png',
-	'My life on campus': '/icons/campus-life.png',
-	'My getting used to college': '/icons/college-life.png',
-	'Becoming a senior': '/icons/senior.png',
-	'My major': '/icons/major.png',
-	'Effects of my student loans': '/icons/student-loans.png',
-	'My certifications': '/icons/certifications.png',
-	'Barriers beyond me': '/icons/barriers.png',
-	'Serious life events': '/icons/serious-life-events.png',
-	'Other things': '/icons/other-things.png'
+var showError = function showError(error) {
+	errorContainer.style.display = 'block';
+	errorBody.innerText = error;
 };
 
-var ingredientSelection = {};
+var hideError = function hideError() {
+	errorContainer.style.display = 'none';
+};
 
-var ingredientsStart = 0;
+var validEmail = function validEmail(email) {
+	var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(email);
+};
 
-var url = window.location.href;
-var paramString = url.split('?')[1];
-var params = paramString.split('&').map(function (p) {
-	return decodeURIComponent(p).split('=');
-});
+submit.onclick = function () {
 
-var paramObj = {};
-for (var i = 0; i < params.length; i++) {
-	paramObj[params[i][0]] = params[i][1];
-}
+	var email = emailInput.value;
+	var password = passwordInput.value;
+	var passwordConfirm = passwordConfirmInput.value;
 
-paramObj.gap = parseInt(paramObj.gap);
-paramObj.transfer = parseInt(paramObj.transfer);
-paramObj.ingredients = paramObj.ingredients.split(',');
-
-var ingredientsContainer = document.getElementsByClassName('ingredients')[0];
-var ingredientMenuContainer = document.getElementsByClassName('ingredient-menu')[0];
-
-function drawIngredients(start, container) {
-	container.innerHTML = ''; // Clear
-
-	// Select 3 from start, draw them
-	for (var _i = start; _i < start + 3; _i++) {
-		if (paramObj.ingredients[_i]) {
-			var el = document.createElement('div');
-			el.classList.add('ingredient');
-			el.classList.add('padding-20');
-
-			var circle = document.createElement('div');
-			circle.classList.add('circle');
-			// circle.classList.add('small-circle')
-			el.appendChild(circle);
-
-			var img = document.createElement('img');
-			img.setAttribute('src', icons[paramObj.ingredients[_i]]);
-			circle.appendChild(img);
-
-			var p = document.createElement('p');
-			p.classList.add('centered-text');
-			p.innerHTML = paramObj.ingredients[_i];
-			el.appendChild(p);
-
-			el.onclick = renderIngredientMenu(el, paramObj.ingredients[_i], ingredientMenuContainer);
-
-			container.appendChild(el);
-		}
+	if (email.length === 0) {
+		showError('Email cannot be empty');
+		return;
 	}
-}
 
-function onMenuItemClick(ingredient, selection) {
-	return function (e) {
-		// If already selected for this ingredient
-		if (ingredientSelection[ingredient] === selection) return;
+	if (password.length === 0) {
+		showError('Password cannot be empty');
+		return;
+	}
 
-		ingredientSelection[ingredient] = selection;
+	var passwordMatch = checkIfPasswordsMatch(password, passwordConfirm);
+	if (!validEmail(email)) {
+		showError('Invalid email address');
+		return;
+	}
 
-		var preSelected = document.getElementsByClassName('ingredient-menu--selected')[0];
-		if (preSelected) preSelected.classList.remove('ingredient-menu--selected');
+	if (!passwordMatch) {
+		showError('Passwords do not match');
+		return;
+	}
 
-		var selected = e.target;
-		if (selected.nodeName === 'P') selected = selected.parentElement;
-		selected.classList.add('ingredient-menu--selected');
-	};
-}
-
-function renderIngredientMenu(element, ingredient, container) {
-	return function (e) {
-		// Cleanup
-		ingredientMenuContainer.innerHTML = ''; // Clear
-
-		document.getElementById('selected').innerHTML = ingredient;
-
-		var menuItems = options[ingredient];
-
-		for (var _i2 = 0; _i2 < menuItems.length; _i2++) {
-			var menuItem = document.createElement('div');
-			menuItem.classList.add('ingredient-menu--item');
-			menuItem.classList.add('padding-20');
-			menuItem.classList.add(ingredient.replace(/\s/g, '-'));
-
-			if (ingredientSelection[ingredient] === menuItems[_i2]) {
-				menuItem.classList.add('ingredient-menu--selected');
-			}
-
-			var p = document.createElement('p');
-			p.innerHTML = menuItems[_i2];
-			menuItem.appendChild(p);
-
-			container.appendChild(menuItem);
-
-			menuItem.onclick = onMenuItemClick(ingredient, menuItems[_i2]);
-		}
-	};
-}
-
-document.getElementById('left').onclick = function () {
-	if (Object.keys(paramObj.ingredients).length <= 3) return;
-
-	if (ingredientsStart === 0) return;else ingredientsStart -= 1;
-
-	drawIngredients(ingredientsStart, ingredientsContainer);
-};
-
-document.getElementById('right').onclick = function () {
-	if (Object.keys(paramObj.ingredients).length <= 3) return;
-
-	if (ingredientsStart === paramObj.ingredients.length - 3) return;else ingredientsStart += 1;
-
-	drawIngredients(ingredientsStart, ingredientsContainer);
-};
-
-document.getElementById('submit').onclick = function (e) {
-	var data = {
-		college: paramObj.college,
-		transfer: paramObj.transfer,
-		gap: paramObj.gap,
-		ingredients: ingredientSelection
-	};
-
-	e.target.classList.add('is-loading');
-	_superagent2.default.post('/submit').send(data).then(function (res) {
+	_superagent2.default.post('/user').send({ email: email, password: password }).then(function (res) {
 		if (res.body.status === 'ok') {
-			window.location.href = '/results_2';
+			window.location.href = '/';
 		} else {
-			alert('Something went wrong!');
+			showError(res.body.error.message);
 		}
 	});
 };
-
-drawIngredients(0, ingredientsContainer);
 
 /***/ }),
 
@@ -2237,4 +2131,4 @@ Emitter.prototype.hasListeners = function (event) {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=ingredients.bundle.js.map
+//# sourceMappingURL=signup.bundle.js.map

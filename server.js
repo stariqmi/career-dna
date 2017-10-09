@@ -22,6 +22,8 @@ MongoClient.connect(mongoUri, function(err, db) {
 	
 	app.get('/', (req, res) => res.render('landing'))
 
+	app.get('/signup', (req, res) => res.render('signup'))
+
 	app.get('/discover', (req, res) => res.render('main'))
 
 	app.get('/ingredients', (req, res) =>   res.render('ingredients'))
@@ -53,6 +55,13 @@ MongoClient.connect(mongoUri, function(err, db) {
 	      if (err || r.insertedCount !== 1) res.send({ status: 'failed' })
 	      else res.send({ status: 'ok' })
 	    })
+	})
+
+	app.post('/user', (req, res) => {
+		const user = req.body
+
+		console.log(user)
+		res.send({ status: 'ok' })
 	})
 	app.listen(port, () => console.log(`Server running on port ${port}`))
 })
