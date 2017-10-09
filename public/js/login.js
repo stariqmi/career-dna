@@ -5,15 +5,10 @@ const errorBody = document.getElementById('error')
 
 const emailInput = document.getElementById('email')
 const passwordInput = document.getElementById('password')
-const passwordConfirmInput = document.getElementById('confirm-password')
 
 const submit = document.getElementById('submit')
 
 errorContainer.style.display = 'none'
-
-const checkIfPasswordsMatch = (password, passwordConfirm) => {
-	return password === passwordConfirm
-}
 
 const showError = (error) => {
 	errorContainer.style.display = 'block'
@@ -32,7 +27,6 @@ const validEmail = (email) => {
 submit.onclick = () => {
 	const username = emailInput.value
 	const password = passwordInput.value
-	const passwordConfirm = passwordConfirmInput.value
 
 	if (username.length === 0) {
 		showError('Email cannot be empty')
@@ -44,14 +38,8 @@ submit.onclick = () => {
 		return
 	}
 
-	const passwordMatch = checkIfPasswordsMatch(password, passwordConfirm)
 	if (!validEmail(username)) {
 		showError('Invalid email address')
-		return
-	}
-
-	if (!passwordMatch) {
-		showError('Passwords do not match')
 		return
 	}
 
@@ -64,6 +52,6 @@ submit.onclick = () => {
 			}
 		})
 		.catch((err) => {
-			showError('User with email already exists')
+			showError('Invalid username or password')
 		})
 }

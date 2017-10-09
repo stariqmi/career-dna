@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 184);
+/******/ 	return __webpack_require__(__webpack_require__.s = 185);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -168,7 +168,7 @@ module.exports = function shouldRetry(err, res) {
 
 /***/ }),
 
-/***/ 184:
+/***/ 185:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -185,15 +185,10 @@ var errorBody = document.getElementById('error');
 
 var emailInput = document.getElementById('email');
 var passwordInput = document.getElementById('password');
-var passwordConfirmInput = document.getElementById('confirm-password');
 
 var submit = document.getElementById('submit');
 
 errorContainer.style.display = 'none';
-
-var checkIfPasswordsMatch = function checkIfPasswordsMatch(password, passwordConfirm) {
-	return password === passwordConfirm;
-};
 
 var showError = function showError(error) {
 	errorContainer.style.display = 'block';
@@ -212,7 +207,6 @@ var validEmail = function validEmail(email) {
 submit.onclick = function () {
 	var username = emailInput.value;
 	var password = passwordInput.value;
-	var passwordConfirm = passwordConfirmInput.value;
 
 	if (username.length === 0) {
 		showError('Email cannot be empty');
@@ -224,14 +218,8 @@ submit.onclick = function () {
 		return;
 	}
 
-	var passwordMatch = checkIfPasswordsMatch(password, passwordConfirm);
 	if (!validEmail(username)) {
 		showError('Invalid email address');
-		return;
-	}
-
-	if (!passwordMatch) {
-		showError('Passwords do not match');
 		return;
 	}
 
@@ -240,7 +228,7 @@ submit.onclick = function () {
 			console.log(res);
 		}
 	}).catch(function (err) {
-		showError('User with email already exists');
+		showError('Invalid username or password');
 	});
 };
 
@@ -2130,4 +2118,4 @@ ResponseBase.prototype._setStatusProperties = function (status) {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=signup.bundle.js.map
+//# sourceMappingURL=login.bundle.js.map

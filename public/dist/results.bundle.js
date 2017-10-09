@@ -4434,7 +4434,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 "use strict";
 
 
-module.exports = __webpack_require__(7);
+module.exports = __webpack_require__(13);
 module.exports.easing = __webpack_require__(137);
 module.exports.canvas = __webpack_require__(138);
 module.exports.options = __webpack_require__(139);
@@ -4459,6 +4459,29 @@ module.exports = {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/**
+ * Check if `obj` is an object.
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+function isObject(obj) {
+  return null !== obj && 'object' === (typeof obj === 'undefined' ? 'undefined' : _typeof(obj));
+}
+
+module.exports = isObject;
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4581,7 +4604,7 @@ Element.extend = helpers.inherits;
 module.exports = Element;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4594,544 +4617,7 @@ module.exports.Point = __webpack_require__(147);
 module.exports.Rectangle = __webpack_require__(148);
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/**
- * Check if `obj` is an object.
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api private
- */
-
-function isObject(obj) {
-  return null !== obj && 'object' === (typeof obj === 'undefined' ? 'undefined' : _typeof(obj));
-}
-
-module.exports = isObject;
-
-/***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var helpers = __webpack_require__(1);
-
-/**
- * Namespace to hold static tick generation functions
- * @namespace Chart.Ticks
- */
-module.exports = {
-	/**
-  * Namespace to hold generators for different types of ticks
-  * @namespace Chart.Ticks.generators
-  */
-	generators: {
-		/**
-   * Interface for the options provided to the numeric tick generator
-   * @interface INumericTickGenerationOptions
-   */
-		/**
-   * The maximum number of ticks to display
-   * @name INumericTickGenerationOptions#maxTicks
-   * @type Number
-   */
-		/**
-   * The distance between each tick.
-   * @name INumericTickGenerationOptions#stepSize
-   * @type Number
-   * @optional
-   */
-		/**
-   * Forced minimum for the ticks. If not specified, the minimum of the data range is used to calculate the tick minimum
-   * @name INumericTickGenerationOptions#min
-   * @type Number
-   * @optional
-   */
-		/**
-   * The maximum value of the ticks. If not specified, the maximum of the data range is used to calculate the tick maximum
-   * @name INumericTickGenerationOptions#max
-   * @type Number
-   * @optional
-   */
-
-		/**
-   * Generate a set of linear ticks
-   * @method Chart.Ticks.generators.linear
-   * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
-   * @param dataRange {IRange} the range of the data
-   * @returns {Array<Number>} array of tick values
-   */
-		linear: function linear(generationOptions, dataRange) {
-			var ticks = [];
-			// To get a "nice" value for the tick spacing, we will use the appropriately named
-			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
-			// for details.
-
-			var spacing;
-			if (generationOptions.stepSize && generationOptions.stepSize > 0) {
-				spacing = generationOptions.stepSize;
-			} else {
-				var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
-				spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
-			}
-			var niceMin = Math.floor(dataRange.min / spacing) * spacing;
-			var niceMax = Math.ceil(dataRange.max / spacing) * spacing;
-
-			// If min, max and stepSize is set and they make an evenly spaced scale use it.
-			if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
-				// If very close to our whole number, use it.
-				if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
-					niceMin = generationOptions.min;
-					niceMax = generationOptions.max;
-				}
-			}
-
-			var numSpaces = (niceMax - niceMin) / spacing;
-			// If very close to our rounded value, use it.
-			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
-				numSpaces = Math.round(numSpaces);
-			} else {
-				numSpaces = Math.ceil(numSpaces);
-			}
-
-			// Put the values into the ticks array
-			ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
-			for (var j = 1; j < numSpaces; ++j) {
-				ticks.push(niceMin + j * spacing);
-			}
-			ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
-
-			return ticks;
-		},
-
-		/**
-   * Generate a set of logarithmic ticks
-   * @method Chart.Ticks.generators.logarithmic
-   * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
-   * @param dataRange {IRange} the range of the data
-   * @returns {Array<Number>} array of tick values
-   */
-		logarithmic: function logarithmic(generationOptions, dataRange) {
-			var ticks = [];
-			var valueOrDefault = helpers.valueOrDefault;
-
-			// Figure out what the max number of ticks we can support it is based on the size of
-			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
-			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
-			// the graph
-			var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
-
-			var endExp = Math.floor(helpers.log10(dataRange.max));
-			var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
-			var exp, significand;
-
-			if (tickVal === 0) {
-				exp = Math.floor(helpers.log10(dataRange.minNotZero));
-				significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
-
-				ticks.push(tickVal);
-				tickVal = significand * Math.pow(10, exp);
-			} else {
-				exp = Math.floor(helpers.log10(tickVal));
-				significand = Math.floor(tickVal / Math.pow(10, exp));
-			}
-
-			do {
-				ticks.push(tickVal);
-
-				++significand;
-				if (significand === 10) {
-					significand = 1;
-					++exp;
-				}
-
-				tickVal = significand * Math.pow(10, exp);
-			} while (exp < endExp || exp === endExp && significand < endSignificand);
-
-			var lastTick = valueOrDefault(generationOptions.max, tickVal);
-			ticks.push(lastTick);
-
-			return ticks;
-		}
-	},
-
-	/**
-  * Namespace to hold formatters for different types of ticks
-  * @namespace Chart.Ticks.formatters
-  */
-	formatters: {
-		/**
-   * Formatter for value labels
-   * @method Chart.Ticks.formatters.values
-   * @param value the value to display
-   * @return {String|Array} the label to display
-   */
-		values: function values(value) {
-			return helpers.isArray(value) ? value : '' + value;
-		},
-
-		/**
-   * Formatter for linear numeric ticks
-   * @method Chart.Ticks.formatters.linear
-   * @param tickValue {Number} the value to be formatted
-   * @param index {Number} the position of the tickValue parameter in the ticks array
-   * @param ticks {Array<Number>} the list of ticks being converted
-   * @return {String} string representation of the tickValue parameter
-   */
-		linear: function linear(tickValue, index, ticks) {
-			// If we have lots of ticks, don't use the ones
-			var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
-
-			// If we have a number like 2.5 as the delta, figure out how many decimal places we need
-			if (Math.abs(delta) > 1) {
-				if (tickValue !== Math.floor(tickValue)) {
-					// not an integer
-					delta = tickValue - Math.floor(tickValue);
-				}
-			}
-
-			var logDelta = helpers.log10(Math.abs(delta));
-			var tickString = '';
-
-			if (tickValue !== 0) {
-				var numDecimal = -1 * Math.floor(logDelta);
-				numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
-				tickString = tickValue.toFixed(numDecimal);
-			} else {
-				tickString = '0'; // never show decimal places for 0
-			}
-
-			return tickString;
-		},
-
-		logarithmic: function logarithmic(tickValue, index, ticks) {
-			var remain = tickValue / Math.pow(10, Math.floor(helpers.log10(tickValue)));
-
-			if (tickValue === 0) {
-				return '0';
-			} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === ticks.length - 1) {
-				return tickValue.toExponential();
-			}
-			return '';
-		}
-	}
-};
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * @namespace Chart.helpers
- */
-
-var helpers = {
-	/**
-  * An empty function that can be used, for example, for optional callback.
-  */
-	noop: function noop() {},
-
-	/**
-  * Returns a unique id, sequentially generated from a global variable.
-  * @returns {Number}
-  * @function
-  */
-	uid: function () {
-		var id = 0;
-		return function () {
-			return id++;
-		};
-	}(),
-
-	/**
-  * Returns true if `value` is neither null nor undefined, else returns false.
-  * @param {*} value - The value to test.
-  * @returns {Boolean}
-  * @since 2.7.0
-  */
-	isNullOrUndef: function isNullOrUndef(value) {
-		return value === null || typeof value === 'undefined';
-	},
-
-	/**
-  * Returns true if `value` is an array, else returns false.
-  * @param {*} value - The value to test.
-  * @returns {Boolean}
-  * @function
-  */
-	isArray: Array.isArray ? Array.isArray : function (value) {
-		return Object.prototype.toString.call(value) === '[object Array]';
-	},
-
-	/**
-  * Returns true if `value` is an object (excluding null), else returns false.
-  * @param {*} value - The value to test.
-  * @returns {Boolean}
-  * @since 2.7.0
-  */
-	isObject: function isObject(value) {
-		return value !== null && Object.prototype.toString.call(value) === '[object Object]';
-	},
-
-	/**
-  * Returns `value` if defined, else returns `defaultValue`.
-  * @param {*} value - The value to return if defined.
-  * @param {*} defaultValue - The value to return if `value` is undefined.
-  * @returns {*}
-  */
-	valueOrDefault: function valueOrDefault(value, defaultValue) {
-		return typeof value === 'undefined' ? defaultValue : value;
-	},
-
-	/**
-  * Returns value at the given `index` in array if defined, else returns `defaultValue`.
-  * @param {Array} value - The array to lookup for value at `index`.
-  * @param {Number} index - The index in `value` to lookup for value.
-  * @param {*} defaultValue - The value to return if `value[index]` is undefined.
-  * @returns {*}
-  */
-	valueAtIndexOrDefault: function valueAtIndexOrDefault(value, index, defaultValue) {
-		return helpers.valueOrDefault(helpers.isArray(value) ? value[index] : value, defaultValue);
-	},
-
-	/**
-  * Calls `fn` with the given `args` in the scope defined by `thisArg` and returns the
-  * value returned by `fn`. If `fn` is not a function, this method returns undefined.
-  * @param {Function} fn - The function to call.
-  * @param {Array|undefined|null} args - The arguments with which `fn` should be called.
-  * @param {Object} [thisArg] - The value of `this` provided for the call to `fn`.
-  * @returns {*}
-  */
-	callback: function callback(fn, args, thisArg) {
-		if (fn && typeof fn.call === 'function') {
-			return fn.apply(thisArg, args);
-		}
-	},
-
-	/**
-  * Note(SB) for performance sake, this method should only be used when loopable type
-  * is unknown or in none intensive code (not called often and small loopable). Else
-  * it's preferable to use a regular for() loop and save extra function calls.
-  * @param {Object|Array} loopable - The object or array to be iterated.
-  * @param {Function} fn - The function to call for each item.
-  * @param {Object} [thisArg] - The value of `this` provided for the call to `fn`.
-  * @param {Boolean} [reverse] - If true, iterates backward on the loopable.
-  */
-	each: function each(loopable, fn, thisArg, reverse) {
-		var i, len, keys;
-		if (helpers.isArray(loopable)) {
-			len = loopable.length;
-			if (reverse) {
-				for (i = len - 1; i >= 0; i--) {
-					fn.call(thisArg, loopable[i], i);
-				}
-			} else {
-				for (i = 0; i < len; i++) {
-					fn.call(thisArg, loopable[i], i);
-				}
-			}
-		} else if (helpers.isObject(loopable)) {
-			keys = Object.keys(loopable);
-			len = keys.length;
-			for (i = 0; i < len; i++) {
-				fn.call(thisArg, loopable[keys[i]], keys[i]);
-			}
-		}
-	},
-
-	/**
-  * Returns true if the `a0` and `a1` arrays have the same content, else returns false.
-  * @see http://stackoverflow.com/a/14853974
-  * @param {Array} a0 - The array to compare
-  * @param {Array} a1 - The array to compare
-  * @returns {Boolean}
-  */
-	arrayEquals: function arrayEquals(a0, a1) {
-		var i, ilen, v0, v1;
-
-		if (!a0 || !a1 || a0.length !== a1.length) {
-			return false;
-		}
-
-		for (i = 0, ilen = a0.length; i < ilen; ++i) {
-			v0 = a0[i];
-			v1 = a1[i];
-
-			if (v0 instanceof Array && v1 instanceof Array) {
-				if (!helpers.arrayEquals(v0, v1)) {
-					return false;
-				}
-			} else if (v0 !== v1) {
-				// NOTE: two different object instances will never be equal: {x:20} != {x:20}
-				return false;
-			}
-		}
-
-		return true;
-	},
-
-	/**
-  * Returns a deep copy of `source` without keeping references on objects and arrays.
-  * @param {*} source - The value to clone.
-  * @returns {*}
-  */
-	clone: function clone(source) {
-		if (helpers.isArray(source)) {
-			return source.map(helpers.clone);
-		}
-
-		if (helpers.isObject(source)) {
-			var target = {};
-			var keys = Object.keys(source);
-			var klen = keys.length;
-			var k = 0;
-
-			for (; k < klen; ++k) {
-				target[keys[k]] = helpers.clone(source[keys[k]]);
-			}
-
-			return target;
-		}
-
-		return source;
-	},
-
-	/**
-  * The default merger when Chart.helpers.merge is called without merger option.
-  * Note(SB): this method is also used by configMerge and scaleMerge as fallback.
-  * @private
-  */
-	_merger: function _merger(key, target, source, options) {
-		var tval = target[key];
-		var sval = source[key];
-
-		if (helpers.isObject(tval) && helpers.isObject(sval)) {
-			helpers.merge(tval, sval, options);
-		} else {
-			target[key] = helpers.clone(sval);
-		}
-	},
-
-	/**
-  * Merges source[key] in target[key] only if target[key] is undefined.
-  * @private
-  */
-	_mergerIf: function _mergerIf(key, target, source) {
-		var tval = target[key];
-		var sval = source[key];
-
-		if (helpers.isObject(tval) && helpers.isObject(sval)) {
-			helpers.mergeIf(tval, sval);
-		} else if (!target.hasOwnProperty(key)) {
-			target[key] = helpers.clone(sval);
-		}
-	},
-
-	/**
-  * Recursively deep copies `source` properties into `target` with the given `options`.
-  * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
-  * @param {Object} target - The target object in which all sources are merged into.
-  * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
-  * @param {Object} [options] - Merging options:
-  * @param {Function} [options.merger] - The merge method (key, target, source, options)
-  * @returns {Object} The `target` object.
-  */
-	merge: function merge(target, source, options) {
-		var sources = helpers.isArray(source) ? source : [source];
-		var ilen = sources.length;
-		var merge, i, keys, klen, k;
-
-		if (!helpers.isObject(target)) {
-			return target;
-		}
-
-		options = options || {};
-		merge = options.merger || helpers._merger;
-
-		for (i = 0; i < ilen; ++i) {
-			source = sources[i];
-			if (!helpers.isObject(source)) {
-				continue;
-			}
-
-			keys = Object.keys(source);
-			for (k = 0, klen = keys.length; k < klen; ++k) {
-				merge(keys[k], target, source, options);
-			}
-		}
-
-		return target;
-	},
-
-	/**
-  * Recursively deep copies `source` properties into `target` *only* if not defined in target.
-  * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
-  * @param {Object} target - The target object in which all sources are merged into.
-  * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
-  * @returns {Object} The `target` object.
-  */
-	mergeIf: function mergeIf(target, source) {
-		return helpers.merge(target, source, { merger: helpers._mergerIf });
-	}
-};
-
-module.exports = helpers;
-
-// DEPRECATIONS
-
-/**
- * Provided for backward compatibility, use Chart.helpers.callback instead.
- * @function Chart.helpers.callCallback
- * @deprecated since version 2.6.0
- * @todo remove at version 3
- * @private
- */
-helpers.callCallback = helpers.callback;
-
-/**
- * Provided for backward compatibility, use Array.prototype.indexOf instead.
- * Array.prototype.indexOf compatibility: Chrome, Opera, Safari, FF1.5+, IE9+
- * @function Chart.helpers.indexOf
- * @deprecated since version 2.7.0
- * @todo remove at version 3
- * @private
- */
-helpers.indexOf = function (array, item, fromIndex) {
-	return Array.prototype.indexOf.call(array, item, fromIndex);
-};
-
-/**
- * Provided for backward compatibility, use Chart.helpers.valueOrDefault instead.
- * @function Chart.helpers.getValueOrDefault
- * @deprecated since version 2.7.0
- * @todo remove at version 3
- * @private
- */
-helpers.getValueOrDefault = helpers.valueOrDefault;
-
-/**
- * Provided for backward compatibility, use Chart.helpers.valueAtIndexOrDefault instead.
- * @function Chart.helpers.getValueAtIndexOrDefault
- * @deprecated since version 2.7.0
- * @todo remove at version 3
- * @private
- */
-helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5156,11 +4642,11 @@ if (typeof window !== 'undefined') {
   root = undefined;
 }
 
-var Emitter = __webpack_require__(9);
-var RequestBase = __webpack_require__(10);
-var isObject = __webpack_require__(5);
-var ResponseBase = __webpack_require__(11);
-var shouldRetry = __webpack_require__(13);
+var Emitter = __webpack_require__(7);
+var RequestBase = __webpack_require__(8);
+var isObject = __webpack_require__(3);
+var ResponseBase = __webpack_require__(9);
+var shouldRetry = __webpack_require__(11);
 
 /**
  * Noop.
@@ -6056,7 +5542,7 @@ request.put = function (url, data, fn) {
 };
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6221,7 +5707,7 @@ Emitter.prototype.hasListeners = function (event) {
 };
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6232,7 +5718,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /**
  * Module of mixed-in functions shared between node and client code
  */
-var isObject = __webpack_require__(5);
+var isObject = __webpack_require__(3);
 
 /**
  * Expose `RequestBase`.
@@ -6848,7 +6334,7 @@ RequestBase.prototype._setTimeouts = function () {
 };
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6858,7 +6344,7 @@ RequestBase.prototype._setTimeouts = function () {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(12);
+var utils = __webpack_require__(10);
 
 /**
  * Expose `ResponseBase`.
@@ -6986,7 +6472,7 @@ ResponseBase.prototype._setStatusProperties = function (status) {
 };
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7061,7 +6547,7 @@ exports.cleanHeader = function (header, shouldStripCookie) {
 };
 
 /***/ }),
-/* 13 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7085,6 +6571,520 @@ module.exports = function shouldRetry(err, res) {
   if (err && 'crossDomain' in err) return true;
   return false;
 };
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var helpers = __webpack_require__(1);
+
+/**
+ * Namespace to hold static tick generation functions
+ * @namespace Chart.Ticks
+ */
+module.exports = {
+	/**
+  * Namespace to hold generators for different types of ticks
+  * @namespace Chart.Ticks.generators
+  */
+	generators: {
+		/**
+   * Interface for the options provided to the numeric tick generator
+   * @interface INumericTickGenerationOptions
+   */
+		/**
+   * The maximum number of ticks to display
+   * @name INumericTickGenerationOptions#maxTicks
+   * @type Number
+   */
+		/**
+   * The distance between each tick.
+   * @name INumericTickGenerationOptions#stepSize
+   * @type Number
+   * @optional
+   */
+		/**
+   * Forced minimum for the ticks. If not specified, the minimum of the data range is used to calculate the tick minimum
+   * @name INumericTickGenerationOptions#min
+   * @type Number
+   * @optional
+   */
+		/**
+   * The maximum value of the ticks. If not specified, the maximum of the data range is used to calculate the tick maximum
+   * @name INumericTickGenerationOptions#max
+   * @type Number
+   * @optional
+   */
+
+		/**
+   * Generate a set of linear ticks
+   * @method Chart.Ticks.generators.linear
+   * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
+   * @param dataRange {IRange} the range of the data
+   * @returns {Array<Number>} array of tick values
+   */
+		linear: function linear(generationOptions, dataRange) {
+			var ticks = [];
+			// To get a "nice" value for the tick spacing, we will use the appropriately named
+			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
+			// for details.
+
+			var spacing;
+			if (generationOptions.stepSize && generationOptions.stepSize > 0) {
+				spacing = generationOptions.stepSize;
+			} else {
+				var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
+				spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
+			}
+			var niceMin = Math.floor(dataRange.min / spacing) * spacing;
+			var niceMax = Math.ceil(dataRange.max / spacing) * spacing;
+
+			// If min, max and stepSize is set and they make an evenly spaced scale use it.
+			if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
+				// If very close to our whole number, use it.
+				if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
+					niceMin = generationOptions.min;
+					niceMax = generationOptions.max;
+				}
+			}
+
+			var numSpaces = (niceMax - niceMin) / spacing;
+			// If very close to our rounded value, use it.
+			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+				numSpaces = Math.round(numSpaces);
+			} else {
+				numSpaces = Math.ceil(numSpaces);
+			}
+
+			// Put the values into the ticks array
+			ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
+			for (var j = 1; j < numSpaces; ++j) {
+				ticks.push(niceMin + j * spacing);
+			}
+			ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
+
+			return ticks;
+		},
+
+		/**
+   * Generate a set of logarithmic ticks
+   * @method Chart.Ticks.generators.logarithmic
+   * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
+   * @param dataRange {IRange} the range of the data
+   * @returns {Array<Number>} array of tick values
+   */
+		logarithmic: function logarithmic(generationOptions, dataRange) {
+			var ticks = [];
+			var valueOrDefault = helpers.valueOrDefault;
+
+			// Figure out what the max number of ticks we can support it is based on the size of
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
+			// the graph
+			var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
+
+			var endExp = Math.floor(helpers.log10(dataRange.max));
+			var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
+			var exp, significand;
+
+			if (tickVal === 0) {
+				exp = Math.floor(helpers.log10(dataRange.minNotZero));
+				significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
+
+				ticks.push(tickVal);
+				tickVal = significand * Math.pow(10, exp);
+			} else {
+				exp = Math.floor(helpers.log10(tickVal));
+				significand = Math.floor(tickVal / Math.pow(10, exp));
+			}
+
+			do {
+				ticks.push(tickVal);
+
+				++significand;
+				if (significand === 10) {
+					significand = 1;
+					++exp;
+				}
+
+				tickVal = significand * Math.pow(10, exp);
+			} while (exp < endExp || exp === endExp && significand < endSignificand);
+
+			var lastTick = valueOrDefault(generationOptions.max, tickVal);
+			ticks.push(lastTick);
+
+			return ticks;
+		}
+	},
+
+	/**
+  * Namespace to hold formatters for different types of ticks
+  * @namespace Chart.Ticks.formatters
+  */
+	formatters: {
+		/**
+   * Formatter for value labels
+   * @method Chart.Ticks.formatters.values
+   * @param value the value to display
+   * @return {String|Array} the label to display
+   */
+		values: function values(value) {
+			return helpers.isArray(value) ? value : '' + value;
+		},
+
+		/**
+   * Formatter for linear numeric ticks
+   * @method Chart.Ticks.formatters.linear
+   * @param tickValue {Number} the value to be formatted
+   * @param index {Number} the position of the tickValue parameter in the ticks array
+   * @param ticks {Array<Number>} the list of ticks being converted
+   * @return {String} string representation of the tickValue parameter
+   */
+		linear: function linear(tickValue, index, ticks) {
+			// If we have lots of ticks, don't use the ones
+			var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
+
+			// If we have a number like 2.5 as the delta, figure out how many decimal places we need
+			if (Math.abs(delta) > 1) {
+				if (tickValue !== Math.floor(tickValue)) {
+					// not an integer
+					delta = tickValue - Math.floor(tickValue);
+				}
+			}
+
+			var logDelta = helpers.log10(Math.abs(delta));
+			var tickString = '';
+
+			if (tickValue !== 0) {
+				var numDecimal = -1 * Math.floor(logDelta);
+				numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
+				tickString = tickValue.toFixed(numDecimal);
+			} else {
+				tickString = '0'; // never show decimal places for 0
+			}
+
+			return tickString;
+		},
+
+		logarithmic: function logarithmic(tickValue, index, ticks) {
+			var remain = tickValue / Math.pow(10, Math.floor(helpers.log10(tickValue)));
+
+			if (tickValue === 0) {
+				return '0';
+			} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === ticks.length - 1) {
+				return tickValue.toExponential();
+			}
+			return '';
+		}
+	}
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * @namespace Chart.helpers
+ */
+
+var helpers = {
+	/**
+  * An empty function that can be used, for example, for optional callback.
+  */
+	noop: function noop() {},
+
+	/**
+  * Returns a unique id, sequentially generated from a global variable.
+  * @returns {Number}
+  * @function
+  */
+	uid: function () {
+		var id = 0;
+		return function () {
+			return id++;
+		};
+	}(),
+
+	/**
+  * Returns true if `value` is neither null nor undefined, else returns false.
+  * @param {*} value - The value to test.
+  * @returns {Boolean}
+  * @since 2.7.0
+  */
+	isNullOrUndef: function isNullOrUndef(value) {
+		return value === null || typeof value === 'undefined';
+	},
+
+	/**
+  * Returns true if `value` is an array, else returns false.
+  * @param {*} value - The value to test.
+  * @returns {Boolean}
+  * @function
+  */
+	isArray: Array.isArray ? Array.isArray : function (value) {
+		return Object.prototype.toString.call(value) === '[object Array]';
+	},
+
+	/**
+  * Returns true if `value` is an object (excluding null), else returns false.
+  * @param {*} value - The value to test.
+  * @returns {Boolean}
+  * @since 2.7.0
+  */
+	isObject: function isObject(value) {
+		return value !== null && Object.prototype.toString.call(value) === '[object Object]';
+	},
+
+	/**
+  * Returns `value` if defined, else returns `defaultValue`.
+  * @param {*} value - The value to return if defined.
+  * @param {*} defaultValue - The value to return if `value` is undefined.
+  * @returns {*}
+  */
+	valueOrDefault: function valueOrDefault(value, defaultValue) {
+		return typeof value === 'undefined' ? defaultValue : value;
+	},
+
+	/**
+  * Returns value at the given `index` in array if defined, else returns `defaultValue`.
+  * @param {Array} value - The array to lookup for value at `index`.
+  * @param {Number} index - The index in `value` to lookup for value.
+  * @param {*} defaultValue - The value to return if `value[index]` is undefined.
+  * @returns {*}
+  */
+	valueAtIndexOrDefault: function valueAtIndexOrDefault(value, index, defaultValue) {
+		return helpers.valueOrDefault(helpers.isArray(value) ? value[index] : value, defaultValue);
+	},
+
+	/**
+  * Calls `fn` with the given `args` in the scope defined by `thisArg` and returns the
+  * value returned by `fn`. If `fn` is not a function, this method returns undefined.
+  * @param {Function} fn - The function to call.
+  * @param {Array|undefined|null} args - The arguments with which `fn` should be called.
+  * @param {Object} [thisArg] - The value of `this` provided for the call to `fn`.
+  * @returns {*}
+  */
+	callback: function callback(fn, args, thisArg) {
+		if (fn && typeof fn.call === 'function') {
+			return fn.apply(thisArg, args);
+		}
+	},
+
+	/**
+  * Note(SB) for performance sake, this method should only be used when loopable type
+  * is unknown or in none intensive code (not called often and small loopable). Else
+  * it's preferable to use a regular for() loop and save extra function calls.
+  * @param {Object|Array} loopable - The object or array to be iterated.
+  * @param {Function} fn - The function to call for each item.
+  * @param {Object} [thisArg] - The value of `this` provided for the call to `fn`.
+  * @param {Boolean} [reverse] - If true, iterates backward on the loopable.
+  */
+	each: function each(loopable, fn, thisArg, reverse) {
+		var i, len, keys;
+		if (helpers.isArray(loopable)) {
+			len = loopable.length;
+			if (reverse) {
+				for (i = len - 1; i >= 0; i--) {
+					fn.call(thisArg, loopable[i], i);
+				}
+			} else {
+				for (i = 0; i < len; i++) {
+					fn.call(thisArg, loopable[i], i);
+				}
+			}
+		} else if (helpers.isObject(loopable)) {
+			keys = Object.keys(loopable);
+			len = keys.length;
+			for (i = 0; i < len; i++) {
+				fn.call(thisArg, loopable[keys[i]], keys[i]);
+			}
+		}
+	},
+
+	/**
+  * Returns true if the `a0` and `a1` arrays have the same content, else returns false.
+  * @see http://stackoverflow.com/a/14853974
+  * @param {Array} a0 - The array to compare
+  * @param {Array} a1 - The array to compare
+  * @returns {Boolean}
+  */
+	arrayEquals: function arrayEquals(a0, a1) {
+		var i, ilen, v0, v1;
+
+		if (!a0 || !a1 || a0.length !== a1.length) {
+			return false;
+		}
+
+		for (i = 0, ilen = a0.length; i < ilen; ++i) {
+			v0 = a0[i];
+			v1 = a1[i];
+
+			if (v0 instanceof Array && v1 instanceof Array) {
+				if (!helpers.arrayEquals(v0, v1)) {
+					return false;
+				}
+			} else if (v0 !== v1) {
+				// NOTE: two different object instances will never be equal: {x:20} != {x:20}
+				return false;
+			}
+		}
+
+		return true;
+	},
+
+	/**
+  * Returns a deep copy of `source` without keeping references on objects and arrays.
+  * @param {*} source - The value to clone.
+  * @returns {*}
+  */
+	clone: function clone(source) {
+		if (helpers.isArray(source)) {
+			return source.map(helpers.clone);
+		}
+
+		if (helpers.isObject(source)) {
+			var target = {};
+			var keys = Object.keys(source);
+			var klen = keys.length;
+			var k = 0;
+
+			for (; k < klen; ++k) {
+				target[keys[k]] = helpers.clone(source[keys[k]]);
+			}
+
+			return target;
+		}
+
+		return source;
+	},
+
+	/**
+  * The default merger when Chart.helpers.merge is called without merger option.
+  * Note(SB): this method is also used by configMerge and scaleMerge as fallback.
+  * @private
+  */
+	_merger: function _merger(key, target, source, options) {
+		var tval = target[key];
+		var sval = source[key];
+
+		if (helpers.isObject(tval) && helpers.isObject(sval)) {
+			helpers.merge(tval, sval, options);
+		} else {
+			target[key] = helpers.clone(sval);
+		}
+	},
+
+	/**
+  * Merges source[key] in target[key] only if target[key] is undefined.
+  * @private
+  */
+	_mergerIf: function _mergerIf(key, target, source) {
+		var tval = target[key];
+		var sval = source[key];
+
+		if (helpers.isObject(tval) && helpers.isObject(sval)) {
+			helpers.mergeIf(tval, sval);
+		} else if (!target.hasOwnProperty(key)) {
+			target[key] = helpers.clone(sval);
+		}
+	},
+
+	/**
+  * Recursively deep copies `source` properties into `target` with the given `options`.
+  * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
+  * @param {Object} target - The target object in which all sources are merged into.
+  * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
+  * @param {Object} [options] - Merging options:
+  * @param {Function} [options.merger] - The merge method (key, target, source, options)
+  * @returns {Object} The `target` object.
+  */
+	merge: function merge(target, source, options) {
+		var sources = helpers.isArray(source) ? source : [source];
+		var ilen = sources.length;
+		var merge, i, keys, klen, k;
+
+		if (!helpers.isObject(target)) {
+			return target;
+		}
+
+		options = options || {};
+		merge = options.merger || helpers._merger;
+
+		for (i = 0; i < ilen; ++i) {
+			source = sources[i];
+			if (!helpers.isObject(source)) {
+				continue;
+			}
+
+			keys = Object.keys(source);
+			for (k = 0, klen = keys.length; k < klen; ++k) {
+				merge(keys[k], target, source, options);
+			}
+		}
+
+		return target;
+	},
+
+	/**
+  * Recursively deep copies `source` properties into `target` *only* if not defined in target.
+  * IMPORTANT: `target` is not cloned and will be updated with `source` properties.
+  * @param {Object} target - The target object in which all sources are merged into.
+  * @param {Object|Array(Object)} source - Object(s) to merge into `target`.
+  * @returns {Object} The `target` object.
+  */
+	mergeIf: function mergeIf(target, source) {
+		return helpers.merge(target, source, { merger: helpers._mergerIf });
+	}
+};
+
+module.exports = helpers;
+
+// DEPRECATIONS
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.callback instead.
+ * @function Chart.helpers.callCallback
+ * @deprecated since version 2.6.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.callCallback = helpers.callback;
+
+/**
+ * Provided for backward compatibility, use Array.prototype.indexOf instead.
+ * Array.prototype.indexOf compatibility: Chrome, Opera, Safari, FF1.5+, IE9+
+ * @function Chart.helpers.indexOf
+ * @deprecated since version 2.7.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.indexOf = function (array, item, fromIndex) {
+	return Array.prototype.indexOf.call(array, item, fromIndex);
+};
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.valueOrDefault instead.
+ * @function Chart.helpers.getValueOrDefault
+ * @deprecated since version 2.7.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.getValueOrDefault = helpers.valueOrDefault;
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.valueAtIndexOrDefault instead.
+ * @function Chart.helpers.getValueAtIndexOrDefault
+ * @deprecated since version 2.7.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
 /***/ }),
 /* 14 */
@@ -19424,7 +19424,7 @@ var _chart = __webpack_require__(135);
 
 var _chart2 = _interopRequireDefault(_chart);
 
-var _superagent = __webpack_require__(8);
+var _superagent = __webpack_require__(6);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
@@ -19457,8 +19457,8 @@ Chart.helpers = __webpack_require__(1);
 __webpack_require__(140)(Chart);
 
 Chart.defaults = __webpack_require__(2);
-Chart.Element = __webpack_require__(3);
-Chart.elements = __webpack_require__(4);
+Chart.Element = __webpack_require__(4);
+Chart.elements = __webpack_require__(5);
 Chart.Interaction = __webpack_require__(15);
 Chart.platform = __webpack_require__(16);
 
@@ -19583,7 +19583,7 @@ module.exports = function () {
 "use strict";
 
 
-var helpers = __webpack_require__(7);
+var helpers = __webpack_require__(13);
 
 /**
  * Easing functions adapted from Robert Penner's easing equations.
@@ -19841,7 +19841,7 @@ helpers.easingEffects = effects;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var helpers = __webpack_require__(7);
+var helpers = __webpack_require__(13);
 
 /**
  * @namespace Chart.helpers.canvas
@@ -20055,7 +20055,7 @@ helpers.drawRoundedRectangle = function (ctx) {
 "use strict";
 
 
-var helpers = __webpack_require__(7);
+var helpers = __webpack_require__(13);
 
 /**
  * @alias Chart.helpers.options
@@ -21952,7 +21952,7 @@ module.exports = {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -22065,7 +22065,7 @@ module.exports = Element.extend({
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 var globalDefaults = defaults.global;
@@ -22162,7 +22162,7 @@ module.exports = Element.extend({
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 var defaultColor = defaults.global.defaultColor;
@@ -22274,7 +22274,7 @@ module.exports = Element.extend({
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 
 defaults._set('global', {
 	elements: {
@@ -22938,7 +22938,7 @@ helpers.removeEvent = _removeEventListener;
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -23319,7 +23319,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -25185,9 +25185,9 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(6);
+var Ticks = __webpack_require__(12);
 
 defaults._set('scale', {
 	display: true,
@@ -26084,7 +26084,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -27034,7 +27034,7 @@ module.exports = function (Chart) {
 
 
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(6);
+var Ticks = __webpack_require__(12);
 
 module.exports = function (Chart) {
 
@@ -27311,7 +27311,7 @@ module.exports = function (Chart) {
 
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(6);
+var Ticks = __webpack_require__(12);
 
 module.exports = function (Chart) {
 
@@ -27502,7 +27502,7 @@ module.exports = function (Chart) {
 
 
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(6);
+var Ticks = __webpack_require__(12);
 
 module.exports = function (Chart) {
 
@@ -27748,7 +27748,7 @@ module.exports = function (Chart) {
 
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(6);
+var Ticks = __webpack_require__(12);
 
 module.exports = function (Chart) {
 
@@ -29280,7 +29280,7 @@ webpackContext.id = 166;
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(4);
+var elements = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('bar', {
@@ -29701,7 +29701,7 @@ module.exports = function (Chart) {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(4);
+var elements = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('bubble', {
@@ -29867,7 +29867,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(4);
+var elements = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('doughnut', {
@@ -30174,7 +30174,7 @@ module.exports = function (Chart) {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(4);
+var elements = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('line', {
@@ -30508,7 +30508,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(4);
+var elements = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('polarArea', {
@@ -30736,7 +30736,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(4);
+var elements = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('radar', {
@@ -31067,7 +31067,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(4);
+var elements = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -31388,7 +31388,7 @@ module.exports = function () {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -31957,7 +31957,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(3);
+var Element = __webpack_require__(4);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {

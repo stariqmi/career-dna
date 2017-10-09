@@ -7,6 +7,7 @@
         ingredients: './public/js/ingredients.js',
         results: './public/js/results.js',
         signup: './public/js/signup.js',
+        login: './public/js/login.js',
     },
     output: {
          path: path.resolve(__dirname, 'public/dist'),
