@@ -2,8 +2,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert')
+
+const models = require('./models')
+
 const compileChartData = require('./chartData')
 const radarChartData = require('./radar_chart_data')
+
+const User = models.User
 
 const port = process.env.PORT || 3030;
 
@@ -60,8 +65,21 @@ MongoClient.connect(mongoUri, function(err, db) {
 	app.post('/user', (req, res) => {
 		const user = req.body
 
-		console.log(user)
-		res.send({ status: 'ok' })
+		User.forge({ email: user.email })
+			.fetch()
+			.then((existing) => {
+				if (existing) res.send({ status: 'failed', error: { message: 'User with email already exists' } })
+				else  {
+					User.forge(user)
+						.save()
+						.then((newUser) => {
+							res.send({ status: 'ok'})
+						})
+						.catch((err) => {
+							res.send({ status: 'failed', error: { message: 'Unable to create user, please try again' } })
+						})
+				}
+			})
 	})
 	app.listen(port, () => console.log(`Server running on port ${port}`))
 })
