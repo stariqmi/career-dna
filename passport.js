@@ -13,11 +13,8 @@ function login() {
     User.forge({ email :  username })
       .fetch()
       .then((user) => {
-        console.log('Fetching user ....')
-        console.log(user.toJSON())
         if (!user) return done(null, false)
         else {
-          console.log(username, password)
           bcrypt.compare(password, user.get('password')).then(function(res) {
             if (res) return done(null, user.toJSON())
             else return done(null, false)

@@ -42,6 +42,7 @@ passport.serializeUser((user, done) => {
 });
  
 passport.deserializeUser((id, done) => {
+  console.log(id)
   User.forge({ id })
     .fetch()
     .then((user) => {

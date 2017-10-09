@@ -223,7 +223,7 @@ submit.onclick = function () {
 		return;
 	}
 
-	_superagent2.default.post('/signup').send({ username: username, password: password }).then(function (res) {
+	_superagent2.default.post('/login').send({ username: username, password: password }).then(function (res) {
 		if (res.body.status === 'ok') window.location.href = '/';else {
 			console.log(res);
 		}

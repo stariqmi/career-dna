@@ -43,7 +43,7 @@ submit.onclick = () => {
 		return
 	}
 
-	request.post('/signup')
+	request.post('/login')
 		.send({ username, password })
 		.then((res) => {
 			if (res.body.status === 'ok') window.location.href = '/'
