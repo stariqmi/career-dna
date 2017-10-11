@@ -34,7 +34,13 @@ function signup() {
     },
     function(req, username, password, done) {
       findOrCreateUser = function() {
-        const user = {}
+        const user = {
+          email: username,
+          type: req.body.type,
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
+        }
+
         User.forge({ email: username })
           .fetch()
           .then((existing) => {

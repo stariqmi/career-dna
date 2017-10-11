@@ -17,6 +17,20 @@ block content
     .container
       .form-container
         .field
+          label.label First Name
+          .control
+            input#first_name.input(type='text' placeholder='First Name')
+        .field
+          label.label Last Name
+          .control
+            input#last_name.input(type='text' placeholder='Last Name')
+        .field
+          label.label Account Type
+          .select
+            select#type
+              option(value='employee') Employee
+              option(value='employer') Employer
+        .field
           label.label Email
           .control
             input#email.input(type='text' placeholder='john.doe@email.com')

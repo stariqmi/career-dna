@@ -186,6 +186,9 @@ var errorBody = document.getElementById('error');
 var emailInput = document.getElementById('email');
 var passwordInput = document.getElementById('password');
 var passwordConfirmInput = document.getElementById('confirm-password');
+var lastNameInput = document.getElementById('last_name');
+var firstNameInput = document.getElementById('first_name');
+var typeInput = document.getElementById('type');
 
 var submit = document.getElementById('submit');
 
@@ -213,9 +216,22 @@ submit.onclick = function () {
 	var username = emailInput.value;
 	var password = passwordInput.value;
 	var passwordConfirm = passwordConfirmInput.value;
+	var firstName = firstNameInput.value;
+	var lastName = lastNameInput.value;
+	var type = typeInput.value;
 
 	if (username.length === 0) {
 		showError('Email cannot be empty');
+		return;
+	}
+
+	if (lastName.length === 0) {
+		showError('Last Name cannot be empty');
+		return;
+	}
+
+	if (firstName.length === 0) {
+		showError('First Name cannot be empty');
 		return;
 	}
 
@@ -235,7 +251,7 @@ submit.onclick = function () {
 		return;
 	}
 
-	_superagent2.default.post('/signup').send({ username: username, password: password }).then(function (res) {
+	_superagent2.default.post('/signup').send({ username: username, password: password, last_name: lastName, first_name: firstName, type: type }).then(function (res) {
 		if (res.body.status === 'ok') window.location.href = '/';else {
 			console.log(res);
 		}

@@ -6,6 +6,9 @@ const errorBody = document.getElementById('error')
 const emailInput = document.getElementById('email')
 const passwordInput = document.getElementById('password')
 const passwordConfirmInput = document.getElementById('confirm-password')
+const lastNameInput = document.getElementById('last_name')
+const firstNameInput = document.getElementById('first_name')
+const typeInput = document.getElementById('type')
 
 const submit = document.getElementById('submit')
 
@@ -33,11 +36,24 @@ submit.onclick = () => {
 	const username = emailInput.value
 	const password = passwordInput.value
 	const passwordConfirm = passwordConfirmInput.value
+  const firstName = firstNameInput.value
+  const lastName = lastNameInput.value
+  const type = typeInput.value
 
 	if (username.length === 0) {
 		showError('Email cannot be empty')
 		return
 	}
+
+  if (lastName.length === 0) {
+    showError('Last Name cannot be empty')
+    return
+  }
+
+  if (firstName.length === 0) {
+    showError('First Name cannot be empty')
+    return
+  }
 
 	if (password.length === 0) {
 		showError('Password cannot be empty')
@@ -56,7 +72,7 @@ submit.onclick = () => {
 	}
 
 	request.post('/signup')
-		.send({ username, password })
+		.send({ username, password, last_name: lastName, first_name: firstName, type })
 		.then((res) => {
 			if (res.body.status === 'ok') window.location.href = '/'
 			else {
