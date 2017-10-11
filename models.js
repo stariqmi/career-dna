@@ -46,6 +46,9 @@ const Job = DB.Model.extend({
   },
   role() {
     return this.hasOne('Role')
+  },
+  createdBy() {
+    return this.hasOne('User', 'created_by')
   }
 })
 
