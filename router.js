@@ -1,6 +1,8 @@
 const assert = require('assert')
 const router = require('express').Router()
 
+const jobsController = require('./controllers/jobs')
+
 const isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated())
     return next();
@@ -8,7 +10,12 @@ const isAuthenticated = function(req, res, next) {
 }
 
 function routerWrapper(passport, mongoDb) {
-  router.get('/', isAuthenticated, (req, res) => res.render('landing'))
+  router.get('/', isAuthenticated, (req, res) => {
+    if (req.user.type === 'employer') return res.redirect('/jobs')
+    return res.render('landing')
+  })
+
+  router.get('/jobs', isAuthenticated, jobsController.renderEmployerJobs)
 
   router.get('/signup', (req, res) => res.render('signup'))
   router.get('/login', (req, res) => res.render('login'))
