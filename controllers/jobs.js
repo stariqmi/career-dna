@@ -36,9 +36,10 @@ module.exports.renderDraft = (req, res) => {
 }
 
 module.exports.createJob = (req, res) => {
+  const created_by = req.user.id
   const job = req.body
 
-  Job.forge(job)
+  Job.forge(Object.assign({}, job, { created_by }))
     .save()
     .then((savedJob) => {
       res.send({ status: 'ok' })
@@ -55,6 +56,23 @@ module.exports.updateJob = (req, res) => {
     .save(job, { patch: true })
     .then((savedJob) => {
       res.send({ status: 'ok' })
+    })
+    .catch((error) => {
+      console.log(error)
+      res.send({ status: 'failed', error })
+    })
+}
+
+module.exports.renderJob = (req, res) => {
+  const id = parseInt(req.params.id)
+  const isEmployer = req.user.type === 'employer'
+  const query = isEmployer ? { id, created_by: req.user.id } : { id }
+
+  Job.forge(query)
+    .fetch({ withRelated: ['applicants', 'role' ]})
+    .then((job) => {
+      if (job) res.render('job', { job: job.toJSON() })
+      else res.send({ message: '404 Not Found' })
     })
     .catch((error) => {
       console.log(error)

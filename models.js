@@ -45,7 +45,7 @@ const Job = DB.model('Job', {
     return this.hasMany('Applicant', 'applicant_id')
   },
   role() {
-    return this.hasOne('Role')
+    return this.belongsTo('Role')
   },
   createdBy() {
     return this.hasOne('User', 'created_by')

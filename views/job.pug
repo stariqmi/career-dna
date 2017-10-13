@@ -1,0 +1,20 @@
+extends employer_layout
+
+block append styles
+  link(rel='stylesheet' type='text/css' href='/css/job.css')
+block append scripts
+  
+block content
+  p.is-size-4.info-title Title
+  p.is-size-5.info-text #{ job.title }
+  p.is-size-5.info-text #{ job.applicants.length } Applicants
+  
+  p.is-size-4.info-title Description
+  p.is-size-5.info-text #{ job.description }
+
+
+  p.is-size-4.info-title Position Type
+  p.is-size-5.info-text #{ job.position_type }
+
+  p.is-size-4.info-title Role
+  p.is-size-5.info-text #{ job.role.label }
