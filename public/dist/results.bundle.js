@@ -4489,142 +4489,6 @@ module.exports = isObject;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var color = __webpack_require__(14);
-var helpers = __webpack_require__(1);
-
-function interpolate(start, view, model, ease) {
-	var keys = Object.keys(model);
-	var i, ilen, key, actual, origin, target, type, c0, c1;
-
-	for (i = 0, ilen = keys.length; i < ilen; ++i) {
-		key = keys[i];
-
-		target = model[key];
-
-		// if a value is added to the model after pivot() has been called, the view
-		// doesn't contain it, so let's initialize the view to the target value.
-		if (!view.hasOwnProperty(key)) {
-			view[key] = target;
-		}
-
-		actual = view[key];
-
-		if (actual === target || key[0] === '_') {
-			continue;
-		}
-
-		if (!start.hasOwnProperty(key)) {
-			start[key] = actual;
-		}
-
-		origin = start[key];
-
-		type = typeof target === 'undefined' ? 'undefined' : _typeof(target);
-
-		if (type === (typeof origin === 'undefined' ? 'undefined' : _typeof(origin))) {
-			if (type === 'string') {
-				c0 = color(origin);
-				if (c0.valid) {
-					c1 = color(target);
-					if (c1.valid) {
-						view[key] = c1.mix(c0, ease).rgbString();
-						continue;
-					}
-				}
-			} else if (type === 'number' && isFinite(origin) && isFinite(target)) {
-				view[key] = origin + (target - origin) * ease;
-				continue;
-			}
-		}
-
-		view[key] = target;
-	}
-}
-
-var Element = function Element(configuration) {
-	helpers.extend(this, configuration);
-	this.initialize.apply(this, arguments);
-};
-
-helpers.extend(Element.prototype, {
-
-	initialize: function initialize() {
-		this.hidden = false;
-	},
-
-	pivot: function pivot() {
-		var me = this;
-		if (!me._view) {
-			me._view = helpers.clone(me._model);
-		}
-		me._start = {};
-		return me;
-	},
-
-	transition: function transition(ease) {
-		var me = this;
-		var model = me._model;
-		var start = me._start;
-		var view = me._view;
-
-		// No animation -> No Transition
-		if (!model || ease === 1) {
-			me._view = model;
-			me._start = null;
-			return me;
-		}
-
-		if (!view) {
-			view = me._view = {};
-		}
-
-		if (!start) {
-			start = me._start = {};
-		}
-
-		interpolate(start, view, model, ease);
-
-		return me;
-	},
-
-	tooltipPosition: function tooltipPosition() {
-		return {
-			x: this._model.x,
-			y: this._model.y
-		};
-	},
-
-	hasValue: function hasValue() {
-		return helpers.isNumber(this._model.x) && helpers.isNumber(this._model.y);
-	}
-});
-
-Element.extend = helpers.inherits;
-
-module.exports = Element;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {};
-module.exports.Arc = __webpack_require__(145);
-module.exports.Line = __webpack_require__(146);
-module.exports.Point = __webpack_require__(147);
-module.exports.Rectangle = __webpack_require__(148);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 /**
  * Root reference for iframes.
  */
@@ -4642,11 +4506,11 @@ if (typeof window !== 'undefined') {
   root = undefined;
 }
 
-var Emitter = __webpack_require__(7);
-var RequestBase = __webpack_require__(8);
+var Emitter = __webpack_require__(5);
+var RequestBase = __webpack_require__(6);
 var isObject = __webpack_require__(3);
-var ResponseBase = __webpack_require__(9);
-var shouldRetry = __webpack_require__(11);
+var ResponseBase = __webpack_require__(7);
+var shouldRetry = __webpack_require__(9);
 
 /**
  * Noop.
@@ -5542,7 +5406,7 @@ request.put = function (url, data, fn) {
 };
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5707,7 +5571,7 @@ Emitter.prototype.hasListeners = function (event) {
 };
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6334,7 +6198,7 @@ RequestBase.prototype._setTimeouts = function () {
 };
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6344,7 +6208,7 @@ RequestBase.prototype._setTimeouts = function () {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(8);
 
 /**
  * Expose `ResponseBase`.
@@ -6472,7 +6336,7 @@ ResponseBase.prototype._setStatusProperties = function (status) {
 };
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6547,7 +6411,7 @@ exports.cleanHeader = function (header, shouldStripCookie) {
 };
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6571,6 +6435,142 @@ module.exports = function shouldRetry(err, res) {
   if (err && 'crossDomain' in err) return true;
   return false;
 };
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var color = __webpack_require__(14);
+var helpers = __webpack_require__(1);
+
+function interpolate(start, view, model, ease) {
+	var keys = Object.keys(model);
+	var i, ilen, key, actual, origin, target, type, c0, c1;
+
+	for (i = 0, ilen = keys.length; i < ilen; ++i) {
+		key = keys[i];
+
+		target = model[key];
+
+		// if a value is added to the model after pivot() has been called, the view
+		// doesn't contain it, so let's initialize the view to the target value.
+		if (!view.hasOwnProperty(key)) {
+			view[key] = target;
+		}
+
+		actual = view[key];
+
+		if (actual === target || key[0] === '_') {
+			continue;
+		}
+
+		if (!start.hasOwnProperty(key)) {
+			start[key] = actual;
+		}
+
+		origin = start[key];
+
+		type = typeof target === 'undefined' ? 'undefined' : _typeof(target);
+
+		if (type === (typeof origin === 'undefined' ? 'undefined' : _typeof(origin))) {
+			if (type === 'string') {
+				c0 = color(origin);
+				if (c0.valid) {
+					c1 = color(target);
+					if (c1.valid) {
+						view[key] = c1.mix(c0, ease).rgbString();
+						continue;
+					}
+				}
+			} else if (type === 'number' && isFinite(origin) && isFinite(target)) {
+				view[key] = origin + (target - origin) * ease;
+				continue;
+			}
+		}
+
+		view[key] = target;
+	}
+}
+
+var Element = function Element(configuration) {
+	helpers.extend(this, configuration);
+	this.initialize.apply(this, arguments);
+};
+
+helpers.extend(Element.prototype, {
+
+	initialize: function initialize() {
+		this.hidden = false;
+	},
+
+	pivot: function pivot() {
+		var me = this;
+		if (!me._view) {
+			me._view = helpers.clone(me._model);
+		}
+		me._start = {};
+		return me;
+	},
+
+	transition: function transition(ease) {
+		var me = this;
+		var model = me._model;
+		var start = me._start;
+		var view = me._view;
+
+		// No animation -> No Transition
+		if (!model || ease === 1) {
+			me._view = model;
+			me._start = null;
+			return me;
+		}
+
+		if (!view) {
+			view = me._view = {};
+		}
+
+		if (!start) {
+			start = me._start = {};
+		}
+
+		interpolate(start, view, model, ease);
+
+		return me;
+	},
+
+	tooltipPosition: function tooltipPosition() {
+		return {
+			x: this._model.x,
+			y: this._model.y
+		};
+	},
+
+	hasValue: function hasValue() {
+		return helpers.isNumber(this._model.x) && helpers.isNumber(this._model.y);
+	}
+});
+
+Element.extend = helpers.inherits;
+
+module.exports = Element;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {};
+module.exports.Arc = __webpack_require__(145);
+module.exports.Line = __webpack_require__(146);
+module.exports.Point = __webpack_require__(147);
+module.exports.Rectangle = __webpack_require__(148);
 
 /***/ }),
 /* 12 */
@@ -19424,7 +19424,7 @@ var _chart = __webpack_require__(135);
 
 var _chart2 = _interopRequireDefault(_chart);
 
-var _superagent = __webpack_require__(6);
+var _superagent = __webpack_require__(4);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
@@ -19457,8 +19457,8 @@ Chart.helpers = __webpack_require__(1);
 __webpack_require__(140)(Chart);
 
 Chart.defaults = __webpack_require__(2);
-Chart.Element = __webpack_require__(4);
-Chart.elements = __webpack_require__(5);
+Chart.Element = __webpack_require__(10);
+Chart.elements = __webpack_require__(11);
 Chart.Interaction = __webpack_require__(15);
 Chart.platform = __webpack_require__(16);
 
@@ -21952,7 +21952,7 @@ module.exports = {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -22065,7 +22065,7 @@ module.exports = Element.extend({
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 var globalDefaults = defaults.global;
@@ -22162,7 +22162,7 @@ module.exports = Element.extend({
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 var defaultColor = defaults.global.defaultColor;
@@ -22274,7 +22274,7 @@ module.exports = Element.extend({
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 
 defaults._set('global', {
 	elements: {
@@ -22938,7 +22938,7 @@ helpers.removeEvent = _removeEventListener;
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -23319,7 +23319,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -25185,7 +25185,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 var Ticks = __webpack_require__(12);
 
@@ -26084,7 +26084,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -29280,7 +29280,7 @@ webpackContext.id = 166;
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(5);
+var elements = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 defaults._set('bar', {
@@ -29701,7 +29701,7 @@ module.exports = function (Chart) {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(5);
+var elements = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 defaults._set('bubble', {
@@ -29867,7 +29867,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(5);
+var elements = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 defaults._set('doughnut', {
@@ -30174,7 +30174,7 @@ module.exports = function (Chart) {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(5);
+var elements = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 defaults._set('line', {
@@ -30508,7 +30508,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(5);
+var elements = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 defaults._set('polarArea', {
@@ -30736,7 +30736,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(5);
+var elements = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 defaults._set('radar', {
@@ -31067,7 +31067,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var elements = __webpack_require__(5);
+var elements = __webpack_require__(11);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -31388,7 +31388,7 @@ module.exports = function () {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -31957,7 +31957,7 @@ module.exports = function (Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(10);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {

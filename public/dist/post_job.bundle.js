@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 133);
+/******/ 	return __webpack_require__(__webpack_require__.s = 186);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 133:
+/***/ 186:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77,176 +77,83 @@ var _superagent2 = _interopRequireDefault(_superagent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var options = {
-	'My identity': ['White', 'Black or Latin', 'Asian', 'Other'],
-	'My gender': ['Male', 'Female', 'Trans', 'Other'],
-	'My parents': ['Both parents went to college', 'One parent went to college', 'No parent went to college', 'First to go to college'],
-	'My family': ['Broke', 'Middle Class', 'Upper Middle Class', 'Rich'],
-	'How I paid for school': ['No Loans', 'Loans', 'Scholarships, Grants', 'Pell Grants'],
-	'Why I chose my school': ['Specific Program', 'Rank / Reputation', 'Cost', 'Family'],
-	'My life on campus': ['Mostly lived on campus', 'Worked', 'Fraternities / Sororities', 'Varsity Sports'],
-	'My getting used to college': ['Remedial Course', 'Active Campus Life', 'Happy with grades'],
-	'Becoming a senior': ['Internships Junior Year', 'Declare Major', 'Job Search', 'No Plans For Jobs'],
-	'My major': ['SCIENCE, TECHNOLOGY, ENGINEERING OR MATH', 'ECONOMICS, FINANCE, OR ACCOUNTING', 'FINE ARTS, MUSIC, DRAMA, OR PERFORMING ARTS', 'ENVIRONMENTAL STUDIES, FORESTRY, OR ECOLOGY', 'LIBERAL ARTS, HISTORY, ANY LANGUAGE, OR PHILOSOPHY	PSYCHOLOGY, SOCIOLOGY ...', 'POLITICAL SCIENCE, PUBLIC POLICY, OR GOVERNMENT'],
-	'Effects of my student loans': ['WILL TAKE JOB OUTSIDE OF FIELD OF STUDY', 'WILL LESS DESIRABLE JOB', 'WILL WORK MORE THAN ONE JOB', 'WILL WORK MORE HOURS'],
-	'My certifications': ['STATE CERTIFICATIONS', 'PROFESSIONAL CERTIFICATIONS', 'JOB REQUIREMENT', 'PART OF COURSE'],
-	'Barriers beyond me': ['NO RIGHT CREDENTIALS / GRADES', 'CANT RELOCATE', 'LACK OF CONNECTIONS', 'NO RECRUTUING / CAREER SVCS HELP'],
-	'Serious life events': ['DIVORCE IN FAMILY', 'PARENTS JOB LOSS', 'ILLNESS', 'DEATH'],
-	'Other things': []
+var titleInput = document.getElementById('title');
+var descriptionInput = document.getElementById('description');
+var positionTypeInput = document.getElementById('position');
+var roleInput = document.getElementById('role');
+
+var postBtn = document.getElementById('post');
+var draftBtn = document.getElementById('draft');
+
+var errorContainer = document.getElementById('error-container');
+var error = document.getElementById('error');
+
+errorContainer.style.display = 'none';
+
+var getFormValues = function getFormValues() {
+  var title = titleInput.value;
+  var description = descriptionInput.value;
+  var position_type = positionTypeInput.value;
+  var role_id = roleInput.value;
+
+  if (title.length === 0 || description.length === 0) return false;
+
+  return { title: title, description: description, position_type: position_type, role_id: role_id };
 };
 
-var icons = {
-	'My identity': '/icons/identify.png',
-	'My parents': '/icons/parents.png',
-	'My gender': '/icons/gender.png',
-	'My family': '/icons/family.png',
-	'How I paid for school': '/icons/school-paid.png',
-	'Why I chose my school': '/icons/school-choice.png',
-	'My life on campus': '/icons/campus-life.png',
-	'My getting used to college': '/icons/college-life.png',
-	'Becoming a senior': '/icons/senior.png',
-	'My major': '/icons/major.png',
-	'Effects of my student loans': '/icons/student-loans.png',
-	'My certifications': '/icons/certifications.png',
-	'Barriers beyond me': '/icons/barriers.png',
-	'Serious life events': '/icons/serious-life-events.png',
-	'Other things': '/icons/other-things.png'
+var enableButtons = function enableButtons() {
+  postBtn.disabled = false;
+  draftBtn.disabled = false;
+
+  postBtn.classList.remove('is-loading');
+  draftBtn.classList.remove('is-loading');
 };
 
-var ingredientSelection = {};
-
-var ingredientsStart = 0;
-
-var url = window.location.href;
-var paramString = url.split('?')[1];
-var params = paramString.split('&').map(function (p) {
-	return decodeURIComponent(p).split('=');
-});
-
-var paramObj = {};
-for (var i = 0; i < params.length; i++) {
-	paramObj[params[i][0]] = params[i][1];
-}
-
-paramObj.gap = parseInt(paramObj.gap);
-paramObj.transfer = parseInt(paramObj.transfer);
-paramObj.ingredients = paramObj.ingredients.split(',');
-
-var ingredientsContainer = document.getElementsByClassName('ingredients')[0];
-var ingredientMenuContainer = document.getElementsByClassName('ingredient-menu')[0];
-
-function drawIngredients(start, container) {
-	container.innerHTML = ''; // Clear
-
-	// Select 3 from start, draw them
-	for (var _i = start; _i < start + 3; _i++) {
-		if (paramObj.ingredients[_i]) {
-			var el = document.createElement('div');
-			el.classList.add('ingredient');
-			el.classList.add('padding-20');
-
-			var circle = document.createElement('div');
-			circle.classList.add('circle');
-			// circle.classList.add('small-circle')
-			el.appendChild(circle);
-
-			var img = document.createElement('img');
-			img.setAttribute('src', icons[paramObj.ingredients[_i]]);
-			circle.appendChild(img);
-
-			var p = document.createElement('p');
-			p.classList.add('centered-text');
-			p.innerHTML = paramObj.ingredients[_i];
-			el.appendChild(p);
-
-			el.onclick = renderIngredientMenu(el, paramObj.ingredients[_i], ingredientMenuContainer);
-
-			container.appendChild(el);
-		}
-	}
-}
-
-function onMenuItemClick(ingredient, selection) {
-	return function (e) {
-		// If already selected for this ingredient
-		if (ingredientSelection[ingredient] === selection) return;
-
-		ingredientSelection[ingredient] = selection;
-
-		var preSelected = document.getElementsByClassName('ingredient-menu--selected')[0];
-		if (preSelected) preSelected.classList.remove('ingredient-menu--selected');
-
-		var selected = e.target;
-		if (selected.nodeName === 'P') selected = selected.parentElement;
-		selected.classList.add('ingredient-menu--selected');
-	};
-}
-
-function renderIngredientMenu(element, ingredient, container) {
-	return function (e) {
-		// Cleanup
-		ingredientMenuContainer.innerHTML = ''; // Clear
-
-		document.getElementById('selected').innerHTML = ingredient;
-
-		var menuItems = options[ingredient];
-
-		for (var _i2 = 0; _i2 < menuItems.length; _i2++) {
-			var menuItem = document.createElement('div');
-			menuItem.classList.add('ingredient-menu--item');
-			menuItem.classList.add('padding-20');
-			menuItem.classList.add(ingredient.replace(/\s/g, '-'));
-
-			if (ingredientSelection[ingredient] === menuItems[_i2]) {
-				menuItem.classList.add('ingredient-menu--selected');
-			}
-
-			var p = document.createElement('p');
-			p.innerHTML = menuItems[_i2];
-			menuItem.appendChild(p);
-
-			container.appendChild(menuItem);
-
-			menuItem.onclick = onMenuItemClick(ingredient, menuItems[_i2]);
-		}
-	};
-}
-
-document.getElementById('left').onclick = function () {
-	if (Object.keys(paramObj.ingredients).length <= 3) return;
-
-	if (ingredientsStart === 0) return;else ingredientsStart -= 1;
-
-	drawIngredients(ingredientsStart, ingredientsContainer);
+var saveJob = function saveJob(job) {
+  _superagent2.default.post('/job').send(job).then(function (res) {
+    if (res.body.status === 'ok') window.location.href = '/jobs';else {
+      enableButtons();
+      showError('Unable to create job');
+    }
+  });
 };
 
-document.getElementById('right').onclick = function () {
-	if (Object.keys(paramObj.ingredients).length <= 3) return;
-
-	if (ingredientsStart === paramObj.ingredients.length - 3) return;else ingredientsStart += 1;
-
-	drawIngredients(ingredientsStart, ingredientsContainer);
+var showError = function showError(message) {
+  error.innerHTML = message;
+  errorContainer.style.display = 'block';
 };
 
-document.getElementById('submit').onclick = function (e) {
-	var data = {
-		college: paramObj.college,
-		transfer: paramObj.transfer,
-		gap: paramObj.gap,
-		ingredients: ingredientSelection
-	};
-
-	e.target.classList.add('is-loading');
-	_superagent2.default.post('/submit').send(data).then(function (res) {
-		if (res.body.status === 'ok') {
-			window.location.href = '/results_2';
-		} else {
-			alert('Something went wrong!');
-		}
-	});
+var hideError = function hideError() {
+  error.innerHTML = '';
+  errorContainer.style.display = 'none';
 };
 
-drawIngredients(0, ingredientsContainer);
+var disableButtons = function disableButtons() {
+  postBtn.disabled = true;
+  draftBtn.disabled = true;
+};
+
+postBtn.onclick = function (e) {
+  hideError();
+  var values = getFormValues();
+
+  if (values) {
+    e.target.classList.add('is-loading');
+    disableButtons();
+    saveJob(Object.assign({}, values, { published: true }));
+  } else showError('Title or Description cannot be empty');
+};
+
+draftBtn.onclick = function (e) {
+  hideError();
+  var values = getFormValues();
+
+  if (values) {
+    e.target.classList.add('is-loading');
+    disableButtons();
+    saveJob(values);
+  } else showError('Title or Description cannot be empty');
+};
 
 /***/ }),
 
@@ -2237,4 +2144,4 @@ module.exports = function shouldRetry(err, res) {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=ingredients.bundle.js.map
+//# sourceMappingURL=post_job.bundle.js.map

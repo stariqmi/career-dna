@@ -8,6 +8,8 @@
         results: './public/js/results.js',
         signup: './public/js/signup.js',
         login: './public/js/login.js',
+        post_job: './public/js/post_job.js',
+        edit_draft: './public/js/edit_draft.js',
     },
     output: {
          path: path.resolve(__dirname, 'public/dist'),

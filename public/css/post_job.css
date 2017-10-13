@@ -1,0 +1,11 @@
+.form-container {
+  width: 500px;
+}
+
+#draft {
+  margin-left: 20px;
+}
+
+#error-container {
+  margin-top: 20px;
+}

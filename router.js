@@ -16,6 +16,12 @@ function routerWrapper(passport, mongoDb) {
   })
 
   router.get('/jobs', isAuthenticated, jobsController.renderEmployerJobs)
+  router.get('/post_job', isAuthenticated, jobsController.renderPostJob)
+  router.get('/drafts/:id', isAuthenticated, jobsController.renderDraft)
+  router.post('/job', isAuthenticated, jobsController.createJob)
+  router.put('/jobs/:id', isAuthenticated, jobsController.updateJob)
+
+  router.get('/applicants', (req, res) => res.render('applicants'))
 
   router.get('/signup', (req, res) => res.render('signup'))
   router.get('/login', (req, res) => res.render('login'))

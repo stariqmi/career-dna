@@ -18,18 +18,18 @@ const DB = bookshelf(knexConn);
 DB.plugin('registry')
 
 
-const User = DB.Model.extend({
+const User = DB.model('User', {
 	tableName: 'users'
 })
 
-const Role = DB.Model.extend({
+const Role = DB.model('Role', {
   tableName: 'roles',
   jobs() {
     return this.hasMany('Job')
   },
 })
 
-const Applicant = DB.Model.extend({
+const Applicant = DB.model('Applicant', {
   tableName: 'applicants',
   applicant() {
     return this.hasOne('User')
@@ -39,10 +39,10 @@ const Applicant = DB.Model.extend({
   }
 })
 
-const Job = DB.Model.extend({
+const Job = DB.model('Job', {
   tableName: 'jobs',
   applicants() {
-    return this.hasMany('Applicant')
+    return this.hasMany('Applicant', 'applicant_id')
   },
   role() {
     return this.hasOne('Role')

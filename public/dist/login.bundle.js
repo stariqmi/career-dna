@@ -65,116 +65,13 @@
 /************************************************************************/
 /******/ ({
 
-/***/ 10:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Return the mime type for the given `str`.
- *
- * @param {String} str
- * @return {String}
- * @api private
- */
-
-exports.type = function (str) {
-  return str.split(/ *; */).shift();
-};
-
-/**
- * Return header field parameters.
- *
- * @param {String} str
- * @return {Object}
- * @api private
- */
-
-exports.params = function (str) {
-  return str.split(/ *; */).reduce(function (obj, str) {
-    var parts = str.split(/ *= */);
-    var key = parts.shift();
-    var val = parts.shift();
-
-    if (key && val) obj[key] = val;
-    return obj;
-  }, {});
-};
-
-/**
- * Parse Link header fields.
- *
- * @param {String} str
- * @return {Object}
- * @api private
- */
-
-exports.parseLinks = function (str) {
-  return str.split(/ *, */).reduce(function (obj, str) {
-    var parts = str.split(/ *; */);
-    var url = parts[0].slice(1, -1);
-    var rel = parts[1].split(/ *= */)[1].slice(1, -1);
-    obj[rel] = url;
-    return obj;
-  }, {});
-};
-
-/**
- * Strip content related fields from `header`.
- *
- * @param {Object} header
- * @return {Object} header
- * @api private
- */
-
-exports.cleanHeader = function (header, shouldStripCookie) {
-  delete header['content-type'];
-  delete header['content-length'];
-  delete header['transfer-encoding'];
-  delete header['host'];
-  if (shouldStripCookie) {
-    delete header['cookie'];
-  }
-  return header;
-};
-
-/***/ }),
-
-/***/ 11:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var ERROR_CODES = ['ECONNRESET', 'ETIMEDOUT', 'EADDRINFO', 'ESOCKETTIMEDOUT'];
-
-/**
- * Determine if a request should be retried.
- * (Borrowed from segmentio/superagent-retry)
- *
- * @param {Error} err
- * @param {Response} [res]
- * @returns {Boolean}
- */
-module.exports = function shouldRetry(err, res) {
-  if (err && err.code && ~ERROR_CODES.indexOf(err.code)) return true;
-  if (res && res.status && res.status >= 500) return true;
-  // Superagent timeout
-  if (err && 'timeout' in err && err.code == 'ECONNABORTED') return true;
-  if (err && 'crossDomain' in err) return true;
-  return false;
-};
-
-/***/ }),
-
 /***/ 185:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _superagent = __webpack_require__(6);
+var _superagent = __webpack_require__(4);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
@@ -258,7 +155,7 @@ module.exports = isObject;
 
 /***/ }),
 
-/***/ 6:
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -283,11 +180,11 @@ if (typeof window !== 'undefined') {
   root = undefined;
 }
 
-var Emitter = __webpack_require__(7);
-var RequestBase = __webpack_require__(8);
+var Emitter = __webpack_require__(5);
+var RequestBase = __webpack_require__(6);
 var isObject = __webpack_require__(3);
-var ResponseBase = __webpack_require__(9);
-var shouldRetry = __webpack_require__(11);
+var ResponseBase = __webpack_require__(7);
+var shouldRetry = __webpack_require__(9);
 
 /**
  * Noop.
@@ -1184,7 +1081,7 @@ request.put = function (url, data, fn) {
 
 /***/ }),
 
-/***/ 7:
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1350,7 +1247,7 @@ Emitter.prototype.hasListeners = function (event) {
 
 /***/ }),
 
-/***/ 8:
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1978,7 +1875,7 @@ RequestBase.prototype._setTimeouts = function () {
 
 /***/ }),
 
-/***/ 9:
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1988,7 +1885,7 @@ RequestBase.prototype._setTimeouts = function () {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(10);
+var utils = __webpack_require__(8);
 
 /**
  * Expose `ResponseBase`.
@@ -2113,6 +2010,109 @@ ResponseBase.prototype._setStatusProperties = function (status) {
   this.notAcceptable = 406 == status;
   this.forbidden = 403 == status;
   this.notFound = 404 == status;
+};
+
+/***/ }),
+
+/***/ 8:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Return the mime type for the given `str`.
+ *
+ * @param {String} str
+ * @return {String}
+ * @api private
+ */
+
+exports.type = function (str) {
+  return str.split(/ *; */).shift();
+};
+
+/**
+ * Return header field parameters.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+exports.params = function (str) {
+  return str.split(/ *; */).reduce(function (obj, str) {
+    var parts = str.split(/ *= */);
+    var key = parts.shift();
+    var val = parts.shift();
+
+    if (key && val) obj[key] = val;
+    return obj;
+  }, {});
+};
+
+/**
+ * Parse Link header fields.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+exports.parseLinks = function (str) {
+  return str.split(/ *, */).reduce(function (obj, str) {
+    var parts = str.split(/ *; */);
+    var url = parts[0].slice(1, -1);
+    var rel = parts[1].split(/ *= */)[1].slice(1, -1);
+    obj[rel] = url;
+    return obj;
+  }, {});
+};
+
+/**
+ * Strip content related fields from `header`.
+ *
+ * @param {Object} header
+ * @return {Object} header
+ * @api private
+ */
+
+exports.cleanHeader = function (header, shouldStripCookie) {
+  delete header['content-type'];
+  delete header['content-length'];
+  delete header['transfer-encoding'];
+  delete header['host'];
+  if (shouldStripCookie) {
+    delete header['cookie'];
+  }
+  return header;
+};
+
+/***/ }),
+
+/***/ 9:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var ERROR_CODES = ['ECONNRESET', 'ETIMEDOUT', 'EADDRINFO', 'ESOCKETTIMEDOUT'];
+
+/**
+ * Determine if a request should be retried.
+ * (Borrowed from segmentio/superagent-retry)
+ *
+ * @param {Error} err
+ * @param {Response} [res]
+ * @returns {Boolean}
+ */
+module.exports = function shouldRetry(err, res) {
+  if (err && err.code && ~ERROR_CODES.indexOf(err.code)) return true;
+  if (res && res.status && res.status >= 500) return true;
+  // Superagent timeout
+  if (err && 'timeout' in err && err.code == 'ECONNABORTED') return true;
+  if (err && 'crossDomain' in err) return true;
+  return false;
 };
 
 /***/ })

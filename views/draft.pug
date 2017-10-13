@@ -1,0 +1,37 @@
+extends employer_layout
+
+block append styles
+  link(rel='stylesheet' type='text/css' href='/css/post_job.css')
+block append scripts
+  
+block content
+  .form-container
+    input#jobId(type='hidden' value=job.id)
+    .field
+      label.label Title
+      .control
+        input#title.input(type='text' placeholder='title' value=job.title)
+    .field
+      label.label Description
+      .control
+        textarea#description.textarea(placeholder='description') #{ job.description }
+    .field
+      label.label Type of Position
+      .select
+        select#position
+          option(value='Full Time') Full Time
+          option(value='Part Time') Part Time
+    .field
+      label.label Primary Role
+      .select
+        select#role
+          each role in roles
+            option(value=role.id)= role.label
+
+    button#post.button.is-info Post
+    button#draft.button.is-info Save Draft
+
+    article#error-container.message.is-danger
+      #error.message-body
+
+  script(src='/dist/edit_draft.bundle.js')

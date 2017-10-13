@@ -14,6 +14,11 @@ body {
   width: 300px;
   background-color: #000;
   height: 100vh;
+  padding: 20px;
+}
+
+.side-menu ul li a {
+  color: #FFF;
 }
 
 .content {
@@ -21,4 +26,68 @@ body {
   left: 300px;
   top: 0;
   width: calc(100vw - 300px);
+  padding: 40px 100px 0 100px;
+}
+
+.published, .unpublished {
+  background-color: #f2f2f2;
+  padding: 10px;
+  position: relative;
+}
+
+.section-title {
+  background-color: #FFF;
+  color: #595959;
+  padding: 20px 40px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.section-title p {
+  margin-bottom: 0 !important;
+}
+
+.sub-title {
+  color: #999999;
+}
+
+.none {
+  color: #999999;
+  background-color: #FFF;
+  margin-bottom: 2px;
+  padding: 20px 40px;
+  border-radius: 3px;
+}
+
+.job {
+  background-color: #FFF;
+  margin-bottom: 2px;
+  padding: 20px 40px;
+  border-radius: 3px;
+}
+
+.job p {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.job--title {
+  color: #595959;
+  text-decoration: none;
+}
+
+.job--title:hover {
+  color: #000;
+  cursor: pointer;
+}
+
+.job--desc, .job--applicants {
+  color: #999999;
+}
+
+.post-job {
+  position: absolute;
+  top: 40px;
+  right: 30px;
 }

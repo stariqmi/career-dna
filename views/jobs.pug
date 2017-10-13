@@ -5,4 +5,27 @@ block append styles
 block append scripts
   
 block content
-  p Jobs
+  .published
+    .section-title
+      p.is-size-3 Open Jobs
+    each job in published
+      .job
+        a.is-size-5.job--title(href="/jobs/" + job.id)= job.title
+        p.is-size-5.job--desc= job.description
+        p.is-size-6.job--applicants #{ job.applicants.length } applicants
+    if published.length === 0
+      p.none No open positions
+  .unpublished
+    .section-title
+      p.is-size-3 Drafts
+      p.is-size-5.sub-title.is-size-6 These jobs are not visible to candidates. Publish them to start recruiting for these positions
+    a.button.is-info.is-medium.post-job(href='/post_job') Post Job
+    each job in unpublished
+      .job
+        a.is-size-5.job--title(href="/drafts/" + job.id)= job.title
+        p.is-size-5.job--desc= job.description
+    if unpublished.length === 0
+      p.is-size-5.none No drafts
+
+  //- Job Page - Edit and Post
+  //- New Job Page
