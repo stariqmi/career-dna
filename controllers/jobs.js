@@ -1,6 +1,7 @@
 const R = require('ramda')
 const Job = require('../models').Job
 const Role = require('../models').Role
+const Applicant = require('../models').Applicant
 
 module.exports.renderEmployerJobs = (req, res) => {
   const employerId = req.user.id
@@ -14,6 +15,43 @@ module.exports.renderEmployerJobs = (req, res) => {
         const unpublished = R.filter(j => !j.published, jobs.toJSON())
         res.render('jobs', { published, unpublished })
       }
+    })
+}
+
+module.exports.renderAllPublishedJobs = (req, res) => {
+  Job.forge({ published: true })
+    .fetchAll({ withRelated: ['applicants', 'role', 'createdBy'] })
+    .then((jobs) => {
+      if (jobs.length === 0) return res.render('all_jobs', { jobs: [] })
+      else return res.render('all_jobs', { jobs: jobs.toJSON() })
+    })
+}
+
+module.exports.renderAppliedToJobs = (req, res) => {
+  Applicant.forge({ user_id: req.user.id })
+    .fetchAll({ withRelated: ['job'] })
+    .then((applications) => {
+      if (applications.length === 0) return res.render('my_jobs', { jobs: [] })
+      else return res.render('my_jobs', { jobs: applications.toJSON().map(a => a.job) })
+    })
+}
+
+module.exports.applyToJob = (req, res) => {
+  const job_id = req.params.id
+  const user_id = req.user.id
+
+  Applicant.forge({ job_id, user_id })
+    .fetch()
+    .then((applicant) => {
+      if (applicant) return false
+      else return Applicant.forge({ job_id, user_id }).save()
+    })
+    .then((applicant) => {
+      if (applicant) res.render('application_success')
+      else res.render('application_duplicate')
+    })
+    .catch((error) => {
+      res.render('application_error')
     })
 }
 

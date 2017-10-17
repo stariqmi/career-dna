@@ -2,6 +2,7 @@ const assert = require('assert')
 const router = require('express').Router()
 
 const jobsController = require('./controllers/jobs')
+const dnaController = require('./controllers/dna')
 
 const isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated())
@@ -10,18 +11,28 @@ const isAuthenticated = function(req, res, next) {
 }
 
 function routerWrapper(passport, mongoDb) {
+
+  function setMongoDB(req, res, next) {
+    req.mongoDb = mongoDb
+    next()
+  }
+
   router.get('/', isAuthenticated, (req, res) => {
     if (req.user.type === 'employer') return res.redirect('/jobs')
-    return res.render('landing')
+    else if (req.user.dna_added) return res.redirect('/all_jobs')
+    return res.render('main')
   })
 
   router.get('/jobs', isAuthenticated, jobsController.renderEmployerJobs)
+  router.get('/all_jobs', isAuthenticated, jobsController.renderAllPublishedJobs)
+  router.get('/my_jobs', isAuthenticated, jobsController.renderAppliedToJobs)
   router.get('/post_job', isAuthenticated, jobsController.renderPostJob)
   router.get('/drafts/:id', isAuthenticated, jobsController.renderDraft)
 
   router.get('/jobs/:id', isAuthenticated, jobsController.renderJob)
   router.post('/job', isAuthenticated, jobsController.createJob)
   router.put('/jobs/:id', isAuthenticated, jobsController.updateJob)
+  router.get('/apply/:id', isAuthenticated, jobsController.applyToJob)
 
   router.get('/applicants', (req, res) => res.render('applicants'))
 
@@ -51,15 +62,7 @@ function routerWrapper(passport, mongoDb) {
     })
   })
 
-  router.post('/submit', isAuthenticated, (req, res) => {
-    const data = req.body
-
-    const collection = mongoDb.collection('ingredientSubmission')
-      collection.insertOne(req.body, (err, r) => {
-        if (err || r.insertedCount !== 1) res.send({ status: 'failed' })
-        else res.send({ status: 'ok' })
-    })
-  })
+  router.post('/submit', isAuthenticated, setMongoDB, dnaController.addDNAForUser)
 
   router.post('/signup', (req, res, next) => {
     passport.authenticate('signup', (error, user) => {

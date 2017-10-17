@@ -17,7 +17,6 @@ const knexConn = knex({
 const DB = bookshelf(knexConn);
 DB.plugin('registry')
 
-
 const User = DB.model('User', {
 	tableName: 'users'
 })
@@ -32,7 +31,7 @@ const Role = DB.model('Role', {
 const Applicant = DB.model('Applicant', {
   tableName: 'applicants',
   applicant() {
-    return this.hasOne('User')
+    return this.belongsTo('User')
   },
   job() {
     return this.belongsTo('Job')
@@ -42,13 +41,13 @@ const Applicant = DB.model('Applicant', {
 const Job = DB.model('Job', {
   tableName: 'jobs',
   applicants() {
-    return this.hasMany('Applicant', 'applicant_id')
+    return this.belongsToMany('User').through('Applicant')
   },
   role() {
     return this.belongsTo('Role')
   },
   createdBy() {
-    return this.hasOne('User', 'created_by')
+    return this.belongsTo('User', 'created_by')
   }
 })
 
