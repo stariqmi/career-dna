@@ -1,7 +1,7 @@
 const assert = require('assert')
 const router = require('express').Router()
 
-const radarChartData = require('./render_chart_data')
+const radarChartData = require('./radar_chart_data')
 const jobsController = require('./controllers/jobs')
 const dnaController = require('./controllers/dna')
 
