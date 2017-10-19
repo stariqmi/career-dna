@@ -1,0 +1,15 @@
+extends employee_layout
+
+block append styles
+  
+block append scripts
+  
+block content
+  .profile-card
+    .section-title
+      p.is-size-3 My Profile
+    .section-content
+      p.is-size-6 Name: #{user.first_name + ' ' + user.last_name}
+      p.is-size-6 Email: #{user.email}
+
+      a.is-size-6(href='/discover') Edit DNA

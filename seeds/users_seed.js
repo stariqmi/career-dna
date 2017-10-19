@@ -1,6 +1,6 @@
 exports.seed = function(knex, Promise) {
   return knex('users').insert([
-    
+    /*
     {
       id: 1,
       last_name: 'Tariq',
@@ -17,6 +17,6 @@ exports.seed = function(knex, Promise) {
       password: '$2a$10$Dl8XC4o0CF1O5P0V4/VAMeWBqtMoyiz6oOcAaYORBZ1yPkuhNxpVC',
       type: 'employee'
     },
-    
+    */
   ])
 };

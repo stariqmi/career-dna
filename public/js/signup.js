@@ -74,7 +74,7 @@ submit.onclick = () => {
 	request.post('/signup')
 		.send({ username, password, last_name: lastName, first_name: firstName, type })
 		.then((res) => {
-			if (res.body.status === 'ok') window.location.href = '/'
+			if (res.body.status === 'ok') window.location.href = '/home'
 			else {
 				console.log(res)
 			}

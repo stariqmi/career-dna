@@ -46,7 +46,7 @@ submit.onclick = () => {
 	request.post('/login')
 		.send({ username, password })
 		.then((res) => {
-			if (res.body.status === 'ok') window.location.href = '/'
+			if (res.body.status === 'ok') window.location.href = '/home'
 			else {
 				console.log(res)
 			}

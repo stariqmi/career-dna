@@ -239,7 +239,7 @@ document.getElementById('submit').onclick = function (e) {
 	e.target.classList.add('is-loading');
 	_superagent2.default.post('/submit').send(data).then(function (res) {
 		if (res.body.status === 'ok') {
-			window.location.href = '/results_2';
+			window.location.href = '/home';
 		} else {
 			alert('Something went wrong!');
 		}

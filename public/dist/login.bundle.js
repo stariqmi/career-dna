@@ -121,7 +121,7 @@ submit.onclick = function () {
 	}
 
 	_superagent2.default.post('/login').send({ username: username, password: password }).then(function (res) {
-		if (res.body.status === 'ok') window.location.href = '/';else {
+		if (res.body.status === 'ok') window.location.href = '/home';else {
 			console.log(res);
 		}
 	}).catch(function (err) {

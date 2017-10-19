@@ -19,7 +19,7 @@ module.exports.renderEmployerJobs = (req, res) => {
 }
 
 module.exports.renderAllPublishedJobs = (req, res) => {
-  Job.forge({ published: true })
+  Job.where({ published: true })
     .fetchAll({ withRelated: ['applicants', 'role', 'createdBy'] })
     .then((jobs) => {
       if (jobs.length === 0) return res.render('all_jobs', { jobs: [] })

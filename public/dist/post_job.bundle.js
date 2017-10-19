@@ -151,7 +151,7 @@ draftBtn.onclick = function (e) {
   if (values) {
     e.target.classList.add('is-loading');
     disableButtons();
-    saveJob(values);
+    saveJob(Object.assign({}, values, { published: false }));
   } else showError('Title or Description cannot be empty');
 };
 

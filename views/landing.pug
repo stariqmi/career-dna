@@ -4,19 +4,14 @@ block append styles
   link(rel='stylesheet' type='text/css' href='/css/main.css')
 
 block content
-  nav.navbar(role='navigation' aria-label='main navigation')
-    .navbar-brand
-      a.navbar-item.is-size-4(href='/')
-        | CAREER
-        span.has-text-weight-bold DNA
-  .bar.yellow-bg
   section
     .container.landing-text
-      p.is-size-6 PLEASE CHOOSE WHICH ONE YOU ARE
-      p.is-size-1 
-        | SEEKING TO BE A HAPPIER&nbsp;
-        a.is-yellow.is-hover-yellow.is-underlined.is-clickable(href='/discover') EMPLOYEE.
-      p.is-size-1
-        | I'M A HAPPIER&nbsp;
-        a.is-yellow.is-hover-yellow.is-underlined.is-clickable(href='/results') EMPLOYER.
-      a.logout(href='/logout') Logout
+      p.is-size-1 Every talent has a secret sauce
+      p.is-size-3 What's your secret sauce?
+      .landing-menu
+        p.is-size-6
+          a.is-clickable(href='/employee_landing') Candidates
+        p.is-size-3.is-text-divider |
+        p.is-size-6
+          a.is-clickable(href='/employer_landing') Employers
+      

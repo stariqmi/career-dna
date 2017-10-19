@@ -4,6 +4,7 @@ const router = require('express').Router()
 const radarChartData = require('./radar_chart_data')
 const jobsController = require('./controllers/jobs')
 const dnaController = require('./controllers/dna')
+const profileController = require('./controllers/profile')
 
 const isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated())
@@ -18,11 +19,19 @@ function routerWrapper(passport, mongoDb) {
     next()
   }
 
-  router.get('/', isAuthenticated, (req, res) => {
+  router.get('/', (req, res) => {
+    res.render('landing')
+  })
+  
+  router.get('/home', isAuthenticated, (req, res) => {
     if (req.user.type === 'employer') return res.redirect('/jobs')
     else if (req.user.dna_added) return res.redirect('/all_jobs')
     return res.render('main')
   })
+
+  router.get('/employee_landing', (req, res) => res.render('employee_landing'))
+  router.get('/employer_landing', (req, res) => res.render('employer_landing'))
+  router.get('/profile', isAuthenticated, profileController.renderProfile)
 
   router.get('/jobs', isAuthenticated, jobsController.renderEmployerJobs)
   router.get('/all_jobs', isAuthenticated, jobsController.renderAllPublishedJobs)
@@ -35,7 +44,7 @@ function routerWrapper(passport, mongoDb) {
   router.put('/jobs/:id', isAuthenticated, jobsController.updateJob)
   router.get('/apply/:id', isAuthenticated, jobsController.applyToJob)
 
-  router.get('/applicants', (req, res) => res.render('applicants'))
+  router.get('/applicants', isAuthenticated, (req, res) => res.render('applicants'))
 
   router.get('/signup', (req, res) => res.render('signup'))
   router.get('/login', (req, res) => res.render('login'))
@@ -88,7 +97,7 @@ function routerWrapper(passport, mongoDb) {
     })(req, res, next)
   })
 
-  router.get('/logout', function(req, res) {
+  router.get('/logout', isAuthenticated, function(req, res) {
       req.logout()
       res.redirect('/')
   })

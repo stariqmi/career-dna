@@ -11,11 +11,17 @@ html
   body
     .side-menu
       ul
-        li
-          a.is-size-2(href='/') CareerDNA
+        li.grey-background.logo-item
+          .img-parent
+            a(href='/home')
+              img.logo(src='/images/logo.png')
         li
           a.is-size-4(href='/all_jobs') Jobs
         li
           a.is-size-4(href='/my_jobs') My Jobs
+        li
+          a.is-size-4(href='/profile') My Profile
+        li
+          a.is-size-4(href='/logout') Logout
     .content
       block content

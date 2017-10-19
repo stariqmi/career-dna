@@ -2,6 +2,7 @@ const User = require('../models').User
 
 module.exports.addDNAForUser = (req, res) => {
   const data = req.body
+  data.user_id = req.user.id
 
   const collection = req.mongoDb.collection('ingredientSubmission')
     collection.insertOne(req.body, (err, r) => {

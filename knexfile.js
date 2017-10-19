@@ -3,7 +3,7 @@ module.exports = {
 	    client: 'postgresql',
 	    connection: {
 	    	database: 'dna',
-	    	user: 'diligen',
+	    	user: 'postgres',
 	    	password: 'diligen#123',
 	    },
 	    pool: {
@@ -19,7 +19,7 @@ module.exports = {
     	client: 'postgresql',
     	connection: {
       		database: 'dna',
-      		user: 'diligen',
+      		user: 'postgres',
       		password: 'diligen#123',
     	},
     	pool: {

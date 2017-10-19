@@ -1,0 +1,16 @@
+extends layout
+
+block append styles
+  link(rel='stylesheet' type='text/css' href='/css/main.css')
+
+block content
+  section
+    .container.landing-text
+      p.is-size-1 You are happiest when you find the best talent
+      .landing-menu.centered
+        p.is-size-6
+          a.is-clickable(href='/login') Login
+        p.is-size-3.is-text-divider |
+        p.is-size-6
+          a.is-clickable(href='/signup') Signup
+      
