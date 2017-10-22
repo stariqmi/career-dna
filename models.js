@@ -4,9 +4,10 @@ const bookshelf = require('bookshelf');
 const knexConn = knex({
   client: 'postgresql',
   connection: {
-    database: 'dna',
-    user: 'postgres',
-    password: 'diligen#123',
+    host: 'elmer.db.elephantsql.com',
+    database: 'nyagrpvw',
+    user: 'nyagrpvw',
+    password: '1rveJl-e2DqEKdmu1ynKxmPCGOGeswWa'
   },
   pool: {
     min: 2,
@@ -30,7 +31,7 @@ const Role = DB.model('Role', {
 
 const Applicant = DB.model('Applicant', {
   tableName: 'applicants',
-  applicant() {
+  user() {
     return this.belongsTo('User')
   },
   job() {

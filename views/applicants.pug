@@ -5,4 +5,23 @@ block append styles
 block append scripts
   
 block content
-  p.is-size-4 Applicants
+  p.is-size-3 Applicants
+  ul
+  each job in jobs
+    p.is-size-4 #{job.title} - #{job.applicants.length} Applicants
+    p.is-size-5 View Match By
+    
+    .field
+      label.label Score By
+      .select
+        select(data-job=job.id)
+          option(value='WORK_ROLE') Work Role
+          option(value='INSTITUTIONAL') Institutional
+          option(value='SOCIAL') Social
+          option(value='PROACTIVE') Proactive
+    .field
+      label.label Minimum Score
+      .control
+        input.input(type='text' placeholder='Minimum Score' data-job=job.id)
+    button.button.is-info(type='button' data-job=job.id, onclick='findMatches(this)') Find Matches
+  script(src='/js/applicants.js')

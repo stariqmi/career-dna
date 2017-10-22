@@ -5,6 +5,7 @@ const radarChartData = require('./radar_chart_data')
 const jobsController = require('./controllers/jobs')
 const dnaController = require('./controllers/dna')
 const profileController = require('./controllers/profile')
+const applicantsController = require('./controllers/applicants')
 
 const isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated())
@@ -44,7 +45,8 @@ function routerWrapper(passport, mongoDb) {
   router.put('/jobs/:id', isAuthenticated, jobsController.updateJob)
   router.get('/apply/:id', isAuthenticated, jobsController.applyToJob)
 
-  router.get('/applicants', isAuthenticated, (req, res) => res.render('applicants'))
+  router.get('/applicants', isAuthenticated, applicantsController.renderAll)
+  router.get('/matches', isAuthenticated, setMongoDB, applicantsController.renderJobApplicants)
 
   router.get('/signup', (req, res) => res.render('signup'))
   router.get('/login', (req, res) => res.render('login'))

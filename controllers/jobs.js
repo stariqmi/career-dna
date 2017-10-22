@@ -6,7 +6,7 @@ const Applicant = require('../models').Applicant
 module.exports.renderEmployerJobs = (req, res) => {
   const employerId = req.user.id
  
-  Job.forge({ created_by: employerId })
+  Job.where({ created_by: employerId })
     .fetchAll({ withRelated: ['applicants'] })
     .then((jobs) => {
       if (jobs.length === 0) res.render('jobs', { published: [], unpublished: [] })

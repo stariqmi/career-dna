@@ -2,10 +2,11 @@ module.exports = {
 	development: {
 	    client: 'postgresql',
 	    connection: {
-	    	database: 'dna',
-	    	user: 'postgres',
-	    	password: 'diligen#123',
-	    },
+        host: 'elmer.db.elephantsql.com',
+        database: 'nyagrpvw',
+        user: 'nyagrpvw',
+        password: '1rveJl-e2DqEKdmu1ynKxmPCGOGeswWa'
+      },
 	    pool: {
 	    	min: 2,
 	    	max: 10,
@@ -18,10 +19,11 @@ module.exports = {
   	production: {
     	client: 'postgresql',
     	connection: {
-      		database: 'dna',
-      		user: 'postgres',
-      		password: 'diligen#123',
-    	},
+        host: 'elmer.db.elephantsql.com',
+        database: 'nyagrpvw',
+        user: 'nyagrpvw',
+        password: '1rveJl-e2DqEKdmu1ynKxmPCGOGeswWa'
+      },
     	pool: {
 	      	min: 2,
 	      	max: 10,
