@@ -7,3 +7,11 @@ block append scripts
 block content
   p.is-size-4= title
   p.is-size-5 #{matches.length} Matches
+
+  div(style='width:1000px;height=1000px')
+    canvas#bubbleChart
+
+  script.
+    window.criteriaMultiple = #{matchByMultiple}
+    window.matches = '#{matchesAsJSONString}'
+  script(src='/dist/matches.bundle.js')

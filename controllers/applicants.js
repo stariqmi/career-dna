@@ -82,15 +82,28 @@ module.exports.renderJobApplicants = (req, res) => {
         .toArray()
         .then((DNAs) => {
           const applicantScores = {}
+          const applicantChoiceCount = {}
           DNAs.forEach((dna) => {
             applicantScores[dna.user_id] = calculateScore(dna, req.query.match_by)
+            applicantChoiceCount[dna.user_id] = Object.keys(dna.ingredients).length
           })
 
           const haveMinScore = []
           for (let userId in applicantScores) {
-            if (applicantScores[userId] >=  minScore) haveMinScore.push(userId)
+            if (applicantScores[userId] >=  minScore){
+              haveMinScore.push({
+                userId,
+                score: applicantScores[userId],
+                choiceCount: applicantChoiceCount[userId]
+              })
+            }
           }
-          res.render('job_applicants', { title: applicantsJSON[0].job.title, matches: haveMinScore })
+          res.render('job_applicants', {
+            title: applicantsJSON[0].job.title,
+            matches: haveMinScore,
+            matchesAsJSONString: JSON.stringify(haveMinScore),
+            matchByMultiple: scoreCriteria[req.query.match_by].multiply_by,
+          })
         })
     })
 }
